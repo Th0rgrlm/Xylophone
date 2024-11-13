@@ -27,18 +27,19 @@ void delay_ms(uint16_t delay);
 
 uint8_t song[] = {
 	C1,
+	E1,
 	NONE, 0x00, 0x80,
 	C1,
-	NONE, 0x00, 0x80,
 	G1,
 	NONE, 0x00, 0x80,
+	D1,
+	F1,
+	NONE, 0x00, 0x80,
+	D1,
 	G1,
 	NONE, 0x00, 0x80,
-	A1,
-	NONE, 0x00, 0x80,
-	A1,
-	NONE, 0x00, 0x80,
-	G1,
+	C1,
+	E1,
 	NONE, 0x01, 0x00,
 	END
 };
@@ -77,6 +78,8 @@ void loop(void)
 		{
 			song_ptr++;
 			xyl_play_note(value);
+			_delay_ms(40);
+			xyl_play_note(NONE);
 		}
 	}
 }
