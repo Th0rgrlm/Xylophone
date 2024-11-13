@@ -8,8 +8,9 @@
  * @copyright Copyright (c) 2024
  * 
  */
-#include <xyl.h>
+#include "xylophone/xyl.h"
 #include <gpio.h>
+#include <structs.h>
 #include <util/delay.h>
 
 #define C1_PIN PD2
@@ -20,7 +21,7 @@
 #define A1_PIN PD7
 #define B1_PIN PB0
 #define C2_PIN PB1
-#define DELAY_MS 100 
+#define DELAY_MS 40
 
 void xyl_play_note(notes_e note){
     switch (note)

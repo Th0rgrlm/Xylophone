@@ -1,3 +1,8 @@
+
+#ifndef __STRUCTS_H__
+#define __STRUCTS_H__
+
+
 typedef enum notes {
     NONE = 0,
     C1 = 1,
@@ -10,3 +15,5 @@ typedef enum notes {
     C2 = 8,
     END = 0xFF
 } notes_e;
+
+#endif

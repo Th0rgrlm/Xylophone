@@ -2,7 +2,7 @@
 #include <util/delay.h>
 #include "error_codes.h"
 #include "structs.h"
-#include "xyl.h"
+#include "xylophone/xyl.h"
 
 
 /**
@@ -17,6 +17,13 @@ void init(void);
  * 
  */
 void loop(void);
+
+/**
+ * @brief Creates a custom delay b/c the _delay_ms function REQUIRES a COMPILE TIME CONSTANT for some ******* reason
+ * 
+ * @param delay Delay in ms
+ */
+void delay_ms(uint16_t delay);
 
 uint8_t song[] = {
 	C1,
@@ -54,13 +61,30 @@ void init(void)
 
 void loop(void)
 {
-	uint8_t* song_ptr = &song;
-	while (*song_ptr++ != END)
+	uint8_t* song_ptr = song;
+	while (*song_ptr != END)
 	{
-		if (*song_ptr == NONE)
+		uint8_t value = *song_ptr;
+		if (value == NONE)
 		{
-			_delay_ms(1000);
+			uint16_t delay = *(song_ptr + 1) * 256;
+			delay += *(song_ptr + 2);
+			delay *= 4;
+			song_ptr += 3;
+			delay_ms(delay);
 		}
-		else xyl_play_note(*song_ptr);
+		else
+		{
+			song_ptr++;
+			xyl_play_note(value);
+		}
+	}
+}
+
+void delay_ms(uint16_t delay)
+{
+	while (delay--)
+	{
+		_delay_ms(1);
 	}
 }
