@@ -9,7 +9,7 @@
  * 
  */
 
- #include "disp.h"
+#include "disp.h"
 
 void display_init() {
     oled_init(OLED_DISP_ON);
@@ -41,6 +41,6 @@ void display_note(notes_e note) {
 
     oled_display();
 
-    while (1) {
-    }
+    // while (1) {
+    // }
 }
