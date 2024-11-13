@@ -28,42 +28,36 @@ void xyl_play_note(notes_e note){
     {
         case C1:
             GPIO_write_high(&PORTD, C1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, C1_PIN);
             break;
         case D1:
             GPIO_write_high(&PORTD, D1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, D1_PIN);
             break;
         case E1:
             GPIO_write_high(&PORTD, E1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, E1_PIN);
             break;
         case F1:
             GPIO_write_high(&PORTD, F1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, F1_PIN);
             break;
         case G1:
             GPIO_write_high(&PORTD, G1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, G1_PIN);
             break;
         case A1:
             GPIO_write_high(&PORTD, A1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTD, A1_PIN);
             break;
         case B1:
             GPIO_write_high(&PORTB, B1_PIN);
-            _delay_ms(DELAY_MS);
-            GPIO_write_low(&PORTB, B1_PIN);
             break;
         case C2:
             GPIO_write_high(&PORTB, C2_PIN);
-            _delay_ms(DELAY_MS);
+            break;
+        case NONE:
+            GPIO_write_low(&PORTD, C1_PIN);
+            GPIO_write_low(&PORTD, D1_PIN);
+            GPIO_write_low(&PORTD, E1_PIN);
+            GPIO_write_low(&PORTD, F1_PIN);
+            GPIO_write_low(&PORTD, G1_PIN);
+            GPIO_write_low(&PORTD, A1_PIN);
+            GPIO_write_low(&PORTB, B1_PIN);
             GPIO_write_low(&PORTB, C2_PIN);
             break;
     default:
