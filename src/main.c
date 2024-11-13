@@ -3,7 +3,7 @@
 #include "error_codes.h"
 #include "structs.h"
 #include "xylophone/xyl.h"
-
+#include <display/disp.h>
 
 /**
  * @brief Initialization function
@@ -27,19 +27,20 @@ void delay_ms(uint16_t delay);
 
 uint8_t song[] = {
 	C1,
-	E1,
-	NONE, 0x00, 0x80,
-	C1,
-	G1,
 	NONE, 0x00, 0x80,
 	D1,
+	NONE, 0x00, 0x80,
+	E1,
+	NONE, 0x00, 0x80,
 	F1,
 	NONE, 0x00, 0x80,
-	D1,
 	G1,
 	NONE, 0x00, 0x80,
-	C1,
-	E1,
+	A1,
+	NONE, 0x00, 0x80,
+	B1,
+	NONE, 0x00, 0x80,
+	C2,
 	NONE, 0x01, 0x00,
 	END
 };
@@ -58,6 +59,7 @@ int main(void)
 void init(void)
 {
 	xyl_init();
+	display_init();
 }
 
 void loop(void)
@@ -80,6 +82,7 @@ void loop(void)
 			xyl_play_note(value);
 			_delay_ms(40);
 			xyl_play_note(NONE);
+			display_note(value);
 		}
 	}
 }

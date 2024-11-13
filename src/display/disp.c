@@ -18,24 +18,25 @@ void display_init() {
 }
 
 void display_note(notes_e note) {
+    oled_clear_buffer();
     switch (note) {
-        case C1: oled_puts("C1");
+        case C1: oled_gotoxy(0, 0); oled_puts("C1");
         break;
-        case D1: oled_puts("D1");
+        case D1: oled_gotoxy(0, 0); oled_puts("D1");
         break;
-        case E1: oled_puts("E1");
+        case E1: oled_gotoxy(0, 0); oled_puts("E1");
         break;
-        case F1: oled_puts("F1");
+        case F1: oled_gotoxy(0, 0); oled_puts("F1");
         break;
-        case G1: oled_puts("G1");
+        case G1: oled_gotoxy(0, 0); oled_puts("G1");
         break;
-        case A1: oled_puts("A1");
+        case A1: oled_gotoxy(0, 0); oled_puts("A1");
         break;
-        case B1: oled_puts("B1");
+        case B1: oled_gotoxy(0, 0); oled_puts("B1");
         break;
-        case C2: oled_puts("C2");
+        case C2: oled_gotoxy(0, 0); oled_puts("C2");
         break;
-        default: oled_puts("Pause");
+        default: oled_gotoxy(0, 0); oled_puts("Pause");
         break;
     }
 
