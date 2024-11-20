@@ -25,7 +25,15 @@ Build an electronic xylophone instrument that can be played using an AVR microco
 
 
 ## Hardware description
+![IMG-20241120-WA0064](https://github.com/user-attachments/assets/db7c0745-f5c5-4218-b780-6ea34aa5dd7e)
 
+![IMG-20241120-WA0066](https://github.com/user-attachments/assets/610bec2b-74c8-458b-84e4-15f066d96a17)
+![IMG-20241120-WA0063](https://github.com/user-attachments/assets/08feb6dd-066e-454e-af2b-172b3e059c08)
+
+![IMG-20241120-WA0066](https://github.com/user-attachments/assets/13526339-5759-4702-8f3d-8d95bcd76df1)
+![IMG-20241120-WA0062](https://github.com/user-attachments/assets/ec665f28-bb57-4d0e-bc47-78641f2cdeb4)
+
+![IMG-20241120-WA0065](https://github.com/user-attachments/assets/c600a844-5449-4f9d-9961-a646d0627320)
 
 
 ## Software description
