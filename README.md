@@ -21,6 +21,9 @@ Build an electronic xylophone instrument that can be played using an AVR microco
     Max G:
 
 ## Theoretical description and explanation
+We wanna play a xylophone, but at the same time we don't! We want it to play by itself...
+
+There will be aa MID-file from D disc, on the computer it will be parsed, then this will sent to the Arduino board via UART and will be loaded to the EEPROM memory. After that it will be postupně sent to the xylophone via I2C.
 
 
 
