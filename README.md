@@ -21,11 +21,30 @@ Build an electronic xylophone instrument that can be played using an AVR microco
     Max G:
 
 ## Theoretical description and explanation
+We wanna play a xylophone, but at the same time we don't! We want it to play by itself...
+
+There will be aa MID-file from D disc, on the computer it will be parsed, then this will sent to the Arduino board via UART and will be loaded to the EEPROM memory. After that it will be postupně sent to the xylophone via I2C.
 
 
 
 ## Hardware description
+### Xylophone
+<img src="https://github.com/user-attachments/assets/db7c0745-f5c5-4218-b780-6ea34aa5dd7e" width="400"/>
 
+##
+### OLED display
+<img src="https://github.com/user-attachments/assets/00d42a6d-9a74-4857-b003-9d14eb6a1511" width="400"/>
+<img src="https://github.com/user-attachments/assets/08feb6dd-066e-454e-af2b-172b3e059c08" width="400"/>
+
+##
+### Clock: DS3231SN 0912A3 208AB
+### EEPROM: ATHYC532
+<img src="https://github.com/user-attachments/assets/13526339-5759-4702-8f3d-8d95bcd76df1" width="400"/>
+<img src="https://github.com/user-attachments/assets/ec665f28-bb57-4d0e-bc47-78641f2cdeb4" width="400"/>
+
+##
+### Arduino + breadboard
+<img src="https://github.com/user-attachments/assets/c600a844-5449-4f9d-9961-a646d0627320" width="400"/>
 
 
 ## Software description
