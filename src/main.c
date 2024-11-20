@@ -4,6 +4,12 @@
 #include "structs.h"
 #include "xylophone/xyl.h"
 #include <display/disp.h>
+#include "eeprom/eeprom.h"
+#include <string.h>
+#include "uart.h"
+#include "stdio.h"
+#include "twi.h"
+#include "avr/interrupt.h"
 
 /**
  * @brief Initialization function
@@ -48,8 +54,20 @@ uint8_t song[] = {
 
 int main(void)
 {
-    init();
-
+	
+	twi_init();
+	uart_init(UART_BAUD_SELECT(115200, F_CPU));
+	sei();
+    uart_puts("Hello, world!\n");
+	eeprom_write(0, song, 4);
+	uart_puts("EEPROM write done\n");
+	memset(song, 0, 4);
+	eeprom_read(0, song, 4);
+	uart_puts("EEPROM read done\n");
+	uint8_t str[16];
+	snprintf(str, 16, "song: 0x%2X", song[3]);
+	uart_puts(str);
+	init();
     while (1) loop();
 
     return SUCCESS;
