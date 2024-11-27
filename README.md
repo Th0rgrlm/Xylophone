@@ -23,7 +23,7 @@ Build an electronic xylophone instrument that can be played using an AVR microco
 ## Theoretical description and explanation
 We wanna play a xylophone, but at the same time we don't! We want it to play by itself...
 
-There will be aa MID-file from D disc, on the computer it will be parsed, then this will sent to the Arduino board via UART and will be loaded to the EEPROM memory. After that it will be postupně sent to the xylophone via I2C.
+There will be aa MID-file from D disc, on the computer it will be parsed, then this will sent to the Arduino board via UART and will be loaded to the EEPROM memory. After that it will be gradually sent to the xylophone via I2C.
 
 
 
@@ -39,7 +39,7 @@ There will be aa MID-file from D disc, on the computer it will be parsed, then t
 ##
 ### Clock: DS3231SN 0912A3 208AB
 ### EEPROM: ATHYC532
-<img src="https://github.com/user-attachments/assets/13526339-5759-4702-8f3d-8d95bcd76df1" width="400"/>
+<img src="https://github.com/user-attachments/assets/13526339-5759-4702-8f3d-8d95bcd76df1" width="400" height="260"/>
 <img src="https://github.com/user-attachments/assets/ec665f28-bb57-4d0e-bc47-78641f2cdeb4" width="400"/>
 
 ##
@@ -48,11 +48,13 @@ There will be aa MID-file from D disc, on the computer it will be parsed, then t
 
 
 ## Software description
+abych nezapomnel:
 
+parse on PC -> using UART to board's RAM (block-wise) -> using I2C to EEPROM -> load blocks from EEPROM (to RAM) and play
 
 
 ## How to use
-
+Connect xylophone to pins 2-9 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
 
 ## Short video
