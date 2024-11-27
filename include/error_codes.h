@@ -1,1 +1,2 @@
+#define EEPROM_ERROR_PAGE_OVERFLOW 1
 #define SUCCESS 0

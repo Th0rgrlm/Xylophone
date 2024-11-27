@@ -156,3 +156,40 @@ void twi_readfrom_mem_into(uint8_t addr, uint8_t memaddr, volatile uint8_t *buf,
         twi_stop();
     }
 }
+
+
+
+
+int8_t twi_read_bites(uint8_t device_address, uint8_t *data, uint16_t data_size, uint8_t hold)
+{
+    twi_start();
+    twi_write(device_address << 1 | TWI_READ);
+    for (uint16_t i = 0; i < data_size; i++)
+    {
+        data[i] = twi_read(i == data_size - 1 ? TWI_NACK : TWI_ACK);
+    }
+    if (!hold)
+    {
+        twi_stop();
+    }
+    return 0;
+}
+
+int8_t twi_write_bites(uint8_t device_address, uint8_t *data, uint16_t data_size, uint8_t hold)
+{
+    twi_start();
+    twi_write(device_address << 1 | TWI_WRITE);
+    for (uint16_t i = 0; i < data_size; i++)
+    {
+        if (twi_write(data[i]) == TWI_NACK)
+        {
+            twi_stop();
+            return -1;
+        }
+    }
+    if (!hold)
+    {
+        twi_stop();
+    }
+    return 0;
+}
