@@ -48,7 +48,8 @@ There will be aa MID-file from D disc, on the computer it will be parsed, then t
 
 
 ## Software description
-
+abych nezapomnel:
+parse on PC -> using UART to board's RAM (block-wise) -> using I2C to EEPROM -> load blocks from EEPROM (to RAM) and play
 
 
 ## How to use
