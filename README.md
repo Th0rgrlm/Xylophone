@@ -49,11 +49,12 @@ There will be aa MID-file from D disc, on the computer it will be parsed, then t
 
 ## Software description
 abych nezapomnel:
+
 parse on PC -> using UART to board's RAM (block-wise) -> using I2C to EEPROM -> load blocks from EEPROM (to RAM) and play
 
 
 ## How to use
-
+Connect xylophone to pins 2-9 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
 
 ## Short video
