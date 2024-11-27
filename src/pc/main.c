@@ -6,7 +6,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <unistd.h>
-#include "./uart.h"
+#include "./uart_pc.h"
 
 #define TRACK_MAX_SIZE 4096
 #define TRACK_MAX_LEN 64
