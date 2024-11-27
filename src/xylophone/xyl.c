@@ -12,15 +12,8 @@
 #include <gpio.h>
 #include <structs.h>
 #include <util/delay.h>
+#include "pins.h"
 
-#define C1_PIN PD2
-#define D1_PIN PD3
-#define E1_PIN PD4
-#define F1_PIN PD5
-#define G1_PIN PD6
-#define A1_PIN PD7
-#define B1_PIN PB0
-#define C2_PIN PB1
 #define DELAY_MS 40
 
 void xyl_play_note(notes_e note){

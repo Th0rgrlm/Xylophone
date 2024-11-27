@@ -1,6 +1,9 @@
 #include "./uart_pc.h"
 #include <windows.h>
 #include "./error_codes.h"
+#include <string.h>
+
+#define UART_CHUNK_SIZE 256
 
 HANDLE h_serial;
 
@@ -18,7 +21,7 @@ int16_t uart_send(FILE* parsed, uint8_t COM)
     uint32_t file_len = get_file_len(parsed);
 
     
-    if ((result = uart_send_file(parsed, file_len, 512)) != SUCCESS) return result;
+    if ((result = uart_send_file(parsed, file_len, UART_CHUNK_SIZE)) != SUCCESS) return result;
 
     uart_close();
 }
@@ -114,8 +117,11 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk)
 
         DWORD bytes_written, total_bytes_written = 0;
         printf("Sending chunk %i...\n", i);
-
-        if (!WriteFile(h_serial, buffer, size, &bytes_written, NULL)) // Send bytes
+        if (size < UART_CHUNK_SIZE) // If not full chunk
+        {
+            memset(&buffer[size], 0x00, UART_CHUNK_SIZE - size); // Pad with zeros
+        }
+        if (!WriteFile(h_serial, buffer, UART_CHUNK_SIZE, &bytes_written, NULL)) // Send bytes
         {
             fprintf(stderr, "Error sending chunk %i\n", i);
             CloseHandle(h_serial);
@@ -134,6 +140,8 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk)
         if (c == 'C') continue; // Continue
         else if (c == 'A') break; // Abort
     }
+    printf("Sending finished\n");
+    return SUCCESS;
 }
 
 
