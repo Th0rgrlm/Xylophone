@@ -13,7 +13,7 @@
 
 ## Original assignment
 
-Build an electronic xylophone instrument that can be played using an AVR microcontroller. The project will combine hardware and software components to create an interactive and programmable musical instrument capable of producing different tones and melodies. Incorporating a graphical user interface (GUI) to visualize the notes being played.
+Build an electronic xylophone instrument that can be played using an Arduino microcontroller. The project will combine hardware and software components to create an interactive and programmable musical instrument capable of producing different tones and melodies. Incorporating a graphical user interface (GUI) to visualize the notes being played.
 
 ## Team
     Martin G:
@@ -24,29 +24,28 @@ Build an electronic xylophone instrument that can be played using an AVR microco
 ## Theoretical description and explanation
 Max: *We wanna play a xylophone, but at the same time we don't! We want it to play by itself...*
 
-The project involves programming an AVR microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/MIDI file. This requires an additional pre-processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. Relevant information such as the note being played will be displayed on an OLED display.
+The project involves programming an Arduino microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/MIDI file. This requires an additional pre-processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. Relevant information such as the note being played will be displayed on an OLED display.
 
 The MID file is first processed in a C program on PC. The [MIDI format](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html) is an extensive specification. Only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also the limited resources of the microcontroller, the pre-processing is done on PC.
 
-The pre-processed data is sent to the AVR microcontroller via USB. For PC - AVR communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. The data transfer "programming" mode and playing mode is determined by a shorted pin on the board. In the playing mode, I2C is again used to load the blocks of data from EEPROM. 
+The pre-processed data is sent to the microcontroller via USB. For PC - Arduino communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. The data transfer "programming" mode and playing mode is determined by a shorted pin on the board. In the playing mode, I2C is again used to load the blocks of data from EEPROM. 
 
 ## Hardware description
-### Xylophone
+#### Xylophone
 <img src="https://github.com/user-attachments/assets/db7c0745-f5c5-4218-b780-6ea34aa5dd7e" width="400"/>
 
 ##
-### OLED display
+#### OLED display
 <img src="https://github.com/user-attachments/assets/00d42a6d-9a74-4857-b003-9d14eb6a1511" width="400"/>
 <img src="https://github.com/user-attachments/assets/08feb6dd-066e-454e-af2b-172b3e059c08" width="400"/>
 
 ##
-### Clock: DS3231SN 0912A3 208AB
-### EEPROM: ATHYC532
+#### Clock: DS3231SN 0912A3 208AB (larger), EEPROM: ATHYC532 (smaller)
 <img src="https://github.com/user-attachments/assets/13526339-5759-4702-8f3d-8d95bcd76df1" width="400" height="260"/>
 <img src="https://github.com/user-attachments/assets/ec665f28-bb57-4d0e-bc47-78641f2cdeb4" width="400"/>
 
 ##
-### Arduino + breadboard
+#### Arduino + breadboard
 <img src="https://github.com/user-attachments/assets/c600a844-5449-4f9d-9961-a646d0627320" width="400"/>
 
 
