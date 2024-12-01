@@ -8,7 +8,8 @@
 - [Software Description](#software-description)
 - [How to use](#how-to-use)
 - [Video](#short-video)
-- [Tools and References](#tools-and-references)
+- [Tools](#tools)
+- [References](#references)
 
 ## Original assignment
 
@@ -21,11 +22,13 @@ Build an electronic xylophone instrument that can be played using an AVR microco
     Max G:
 
 ## Theoretical description and explanation
-We wanna play a xylophone, but at the same time we don't! We want it to play by itself...
+Max: *We wanna play a xylophone, but at the same time we don't! We want it to play by itself...*
 
-There will be aa MID-file from D disc, on the computer it will be parsed, then this will sent to the Arduino board via UART and will be loaded to the EEPROM memory. After that it will be gradually sent to the xylophone via I2C.
+The project involves programming an AVR microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/MIDI file. This requires an additional pre-processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. Relevant information such as the note being played will be displayed on an OLED display.
 
+The MID file is first processed in a C program on PC. The [MIDI format](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html) is an extensive specification. Only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also the limited resources of the microcontroller, the pre-processing is done on PC.
 
+The pre-processed data is sent to the AVR microcontroller via USB. For PC - AVR communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. The data transfer "programming" mode and playing mode is determined by a shorted pin on the board. In the playing mode, I2C is again used to load the blocks of data from EEPROM. 
 
 ## Hardware description
 ### Xylophone
@@ -48,10 +51,35 @@ There will be aa MID-file from D disc, on the computer it will be parsed, then t
 
 
 ## Software description
-abych nezapomnel:
 
-parse on PC -> using UART to board's RAM (block-wise) -> using I2C to EEPROM -> load blocks from EEPROM (to RAM) and play
+This is the structure of the project's source files including the libraries and PC subprogram:
 
+    .
+    ├── include
+    │     ├── pins.h        # Arduino pins
+    │     ├── structs.h     # Enum of note, pause and end events
+    │     └── ...
+    ├── lib
+    │     ├── gpio            # GPIO library (c) Tomas Fryza
+    │     ├── midi            
+    │     ├── oled            # OLED display library (c) Skie-Systems
+    │     ├── twi             # I2C/TWI library (c) Tomas Fryza
+    │     └── uart            # UART library with r/t circular buffers (c) Peter Fleury
+    ├── src
+    │     ├── main.c          # main program loop, init logic and interrupts
+    │     ├── display         # functions to display data on OLED
+    │     ├── eeprom          # EEPROM read/write functions
+    │     └── xylophone       # play note functions
+    ├── pc                    # PC program for MID pre-processing
+    └── platformio.ini        # PlatformIO framework config
+
+### MIDI parser
+
+### Event mapping
+
+### Data transfer
+
+### Details: interrupt, timing, block size
 
 ## How to use
 Connect xylophone to pins 2-9 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
@@ -61,12 +89,16 @@ Connect xylophone to pins 2-9 and to ground, after this, the logical zero will b
 
 
 
-## Tools and References
+## Tools
 
 [PlatformIO](https://platformio.org/)
 
 [SimulIDE](https://simulide.com/p/)
 
 [Inkscape](https://inkscape.org/)
+
+## References
+
+[Standard MIDI-File Format Spec. 1.1, updated](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html)
 
 Digital Electronics 2 presentation by Tomas Fryza
