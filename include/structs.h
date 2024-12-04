@@ -26,4 +26,11 @@ typedef enum notes {
     END = 0xFF
 } notes_e;
 
+typedef enum note_status {
+    STATUS_DELAY_1 = 0,
+    STATUS_DELAY_2 = 1,
+    STATUS_NOTE = 2,
+    STATUS_END = 0xFF
+} note_status_e;
+
 #endif

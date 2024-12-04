@@ -13,5 +13,6 @@
 #define __CONSTANTS_H__
 
 #define UART_RX_BUFFER_SIZE 256
+#define SONG_SIZE 128
 
 #endif
