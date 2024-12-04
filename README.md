@@ -77,14 +77,14 @@ This is the structure of the project's source files including the libraries and 
 In total, 8 pins are used for the notes of the xylophone. One other pin is reserved for the toggling of programming and playing mode.
 
 ```c
-#define C1_PIN PD2
-#define D1_PIN PD3
-#define E1_PIN PD4
-#define F1_PIN PD5
-#define G1_PIN PD6
-#define A1_PIN PD7
-#define B1_PIN PB0
-#define C2_PIN PB1
+#define C1_PIN PD3
+#define D1_PIN PD4
+#define E1_PIN PD5
+#define F1_PIN PD6
+#define G1_PIN PD7
+#define A1_PIN PB0
+#define B1_PIN PB1
+#define C2_PIN PB2
 #define GPIO_PROGRAMM_MODE PC0
 ```
 
@@ -185,7 +185,7 @@ display_note(value);
 ```
 
 ## How to use
-Connect xylophone to pins 2-9 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
+Connect xylophone to pins 3-10 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
 
 ## Short video
