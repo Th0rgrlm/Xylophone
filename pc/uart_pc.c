@@ -109,9 +109,11 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk)
         {
             size = file_len % chunk; // Set size to the remainder of the file
         }
-        if (fread(buffer, 1, size, file) != size) // Read bytes from file
+        uint16_t read;
+        fseek(file, 0, SEEK_SET); // Set pointer to the start of the file
+        if ((read = fread(buffer, 1, size, file)) != size) // Read bytes from file
         {
-            fprintf(stderr, "Error getting bytes from file - incorrect size\n");
+            fprintf(stderr, "Error getting bytes from file - incorrect size: read %d, size requested %d, error: %i\n", read, size, errno);
             return ERROR_COM_WRITE;
         }
 

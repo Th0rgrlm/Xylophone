@@ -1,3 +1,13 @@
+/**
+ * @file structs.h
+ * @author Martin Garncarz (246815@vutbr.cz)
+ * @brief Basic structure definitions
+ * @version 0.1
+ * @date 2024-12-04
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #ifndef __STRUCTS_H__
 #define __STRUCTS_H__

@@ -1,7 +1,7 @@
 /**
  * @file constants.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Martin Garncarz (246815@vutbr.cz)
+ * @brief Constants definitions
  * @version 0.1
  * @date 2024-11-27
  * 
@@ -9,4 +9,9 @@
  * 
  */
 
+#ifndef __CONSTANTS_H__
+#define __CONSTANTS_H__
+
 #define UART_RX_BUFFER_SIZE 256
+
+#endif

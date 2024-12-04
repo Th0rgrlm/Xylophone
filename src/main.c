@@ -35,48 +35,57 @@ void loop(void);
  */
 void delay_ms(uint16_t delay);
 
+/**
+ * @brief Initializes auxiliary pins
+ * 
+ */
 void pin_init(void);
 
-static uint8_t mode = 0;
+static uint8_t mode = 0; /** @brief Current Arduino mode */
 
 
-uint8_t song[] = {
-	C1,
-	NONE, 0x00, 0x80,
-	D1,
-	NONE, 0x00, 0x80,
-	E1,
-	NONE, 0x00, 0x80,
-	F1,
-	NONE, 0x00, 0x80,
-	G1,
-	NONE, 0x00, 0x80,
-	A1,
-	NONE, 0x00, 0x80,
-	B1,
-	NONE, 0x00, 0x80,
-	C2,
-	NONE, 0x01, 0x00,
-	END
-};
+// uint8_t song[] = {
+// 	C1,
+// 	NONE, 0x00, 0x80,
+// 	D1,
+// 	NONE, 0x00, 0x80,
+// 	E1,
+// 	NONE, 0x00, 0x80,
+// 	F1,
+// 	NONE, 0x00, 0x80,
+// 	G1,
+// 	NONE, 0x00, 0x80,
+// 	A1,
+// 	NONE, 0x00, 0x80,
+// 	B1,
+// 	NONE, 0x00, 0x80,
+// 	C2,
+// 	NONE, 0x01, 0x00,
+// 	END
+// };
 
+
+uint8_t song[128]; /** @brief Currently playing song */
 
 int main(void)
 {
-	
-	twi_init();
-	uart_init(UART_BAUD_SELECT(115200, F_CPU));
-	sei();
-    uart_puts("Hello, world!\n");
-	eeprom_write(0, song, 4);
-	uart_puts("EEPROM write done\n");
-	memset(song, 0, 4);
-	eeprom_read(0, song, 4);
-	uart_puts("EEPROM read done\n");
-	uint8_t str[16];
-	snprintf((char*)str, 16, "song: 0x%2X", song[3]);
-	uart_puts((char*)str);
 	init();
+    uart_puts("Hello, world!\n");
+	eeprom_read(0, song, 128);
+	uart_puts("EEPROM read done\n");
+	for (int i = 0; i < 128; i++)
+	{
+		char c[4];
+		snprintf(c, 3, "%02X ", song[i]);
+		uart_puts(c);
+	}
+
+	// memset(song, 0, 4);
+	// eeprom_read(0, song, 4);
+	// uart_puts("EEPROM read done\n");
+	// uint8_t str[16];
+	// snprintf((char*)str, 16, "song: 0x%2X", song[3]);
+	// uart_puts((char*)str);
     while (1) loop();
 
     return SUCCESS;
@@ -86,8 +95,12 @@ int main(void)
 void init(void)
 {
 	pin_init(); // Initialize programming mode pin
-	sei(); // Enable interrupts
 	xyl_init(); // Initialize xylophone pins
+	twi_init();
+	uart_init(UART_BAUD_SELECT(115200, F_CPU));
+	PCMSK1 |= (0b1 << PCINT8); // Enable pin change interrupt
+	PCICR |= (0b1 << PCIE1); // Enable block pin change interrupt
+	sei();
 	display_init(); // Initialize display
 }
 
@@ -95,6 +108,7 @@ void loop(void)
 {
 	if (mode == 1)
 	{
+		uart_puts("Mode 1");
 		static uint8_t eeprom_list_ptr = 0; // Pointer to EEPROM memory for writing
 		uint8_t rx_buffer[UART_RX_BUFFER_SIZE];
 		uint8_t end_reached = 0;
@@ -126,6 +140,11 @@ void loop(void)
 		if (end_reached) // On transmission end
 		{
 			uart_putc('A'); // End transmission
+			while (1)
+			{
+				printf("Abort");
+				delay_ms(1000);
+			}
 		}
 		else uart_putc('C'); // Ask for another chunk
 		return;
@@ -163,22 +182,23 @@ void delay_ms(uint16_t delay)
 
 void pin_init(void)
 {
-	GPIO_mode_input_pullup(&PORTC, GPIO_PROGRAMM_MODE);
+	GPIO_mode_input_pullup(&PORTD, GPIO_PROGRAMM_MODE); // Set programming pin to pullup (default high)
 	return;
 }	
 
 
-
-ISR(PCINT0_vect)
+/**
+ * @brief Interrupt Service Routine for changing the mode on pin change
+ * 
+ */
+ISR(INT0_vect)
 {
-	mode = !GPIO_read(&PORTC, GPIO_PROGRAMM_MODE);
-	if (mode == 0)
-	{
-		mode = 1;
-	}
+	uart_puts("ISR");
+	mode = !GPIO_read(&PORTD, GPIO_PROGRAMM_MODE);
+	if (mode == 0) mode = 1;
 	else 
 	{
-		wdt_enable(0);
-		while (1);
+		wdt_enable(0); // Enable watchdog
+		while (1); // Reset device
 	}
 }

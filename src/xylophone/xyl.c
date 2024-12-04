@@ -35,7 +35,7 @@ void xyl_play_note(notes_e note){
             GPIO_write_high(&PORTD, G1_PIN);
             break;
         case A1:
-            GPIO_write_high(&PORTD, A1_PIN);
+            GPIO_write_high(&PORTB, A1_PIN);
             break;
         case B1:
             GPIO_write_high(&PORTB, B1_PIN);
@@ -49,7 +49,7 @@ void xyl_play_note(notes_e note){
             GPIO_write_low(&PORTD, E1_PIN);
             GPIO_write_low(&PORTD, F1_PIN);
             GPIO_write_low(&PORTD, G1_PIN);
-            GPIO_write_low(&PORTD, A1_PIN);
+            GPIO_write_low(&PORTB, A1_PIN);
             GPIO_write_low(&PORTB, B1_PIN);
             GPIO_write_low(&PORTB, C2_PIN);
             break;
@@ -64,7 +64,7 @@ void xyl_init(void){
     GPIO_mode_output(&DDRD, E1_PIN);
     GPIO_mode_output(&DDRD, F1_PIN);
     GPIO_mode_output(&DDRD, G1_PIN);
-    GPIO_mode_output(&DDRD, A1_PIN);
+    GPIO_mode_output(&DDRB, A1_PIN);
     GPIO_mode_output(&DDRB, B1_PIN);
     GPIO_mode_output(&DDRB, C2_PIN);
 }

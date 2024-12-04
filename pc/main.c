@@ -148,7 +148,7 @@ int main(int argc, uint8_t* argv[])
     }
 
     // Create output file
-    out_file = fopen(out_file_path, "wb");
+    out_file = fopen(out_file_path, "wb+");
     if (out_file == NULL)
     {
         fprintf(stderr, "Error creating output file.\n");
@@ -169,7 +169,7 @@ int main(int argc, uint8_t* argv[])
     // Send parsed midi //
     //////////////////////
 
-    printf("Upload result: %i", uart_send(out_file, 1));
+    printf("Upload result: %i", uart_send(out_file, COM));
 
     fclose(out_file); // Close output file
 
