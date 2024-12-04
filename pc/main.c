@@ -282,7 +282,7 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
 
 void create_delay(int64_t delta_time, track_info_t* track, FILE* out_file)
 {
-    uint16_t delay_ms = delta_time * track->track_tempo_us / 1000 / track->ticks_per_quarter; // Convert to ms
+    uint16_t delay_ms = delta_time * track->track_tempo_us / 1000 / track->ticks_per_quarter / 2; // Convert to ms
     fprintf(out_file, "%c%c%c", DELAY, delay_ms >> 8, delay_ms & 0x00FF); // Write bytes to output file
     return;
 }

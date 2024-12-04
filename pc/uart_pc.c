@@ -102,6 +102,7 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk)
     uint8_t max_chunk = file_len / chunk + 1; // Get maximum chunks to send
     uint8_t buffer[chunk];
     memset(buffer, 0x00, chunk); // Clear buffer
+    fseek(file, 0, SEEK_SET); // Set pointer to the start of the file
     for (int i = 0; i < max_chunk; i++)
     {
         uint16_t size = chunk; // Set size to be sent to chunk size
@@ -110,7 +111,6 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk)
             size = file_len % chunk; // Set size to the remainder of the file
         }
         uint16_t read;
-        fseek(file, 0, SEEK_SET); // Set pointer to the start of the file
         if ((read = fread(buffer, 1, size, file)) != size) // Read bytes from file
         {
             fprintf(stderr, "Error getting bytes from file - incorrect size: read %d, size requested %d, error: %i\n", read, size, errno);
