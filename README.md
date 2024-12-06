@@ -6,6 +6,7 @@
 - [Theoretical Description and Explanation](#theoretical-description-and-explanation)
 - [Hardware description](#hardware-description)
 - [Software Description](#software-description)
+- [What we learned](#what-we-learned)
 - [How to use](#how-to-use)
 - [Video](#short-video)
 - [Tools](#tools)
@@ -24,11 +25,11 @@ Build an electronic xylophone instrument that can be played using an Arduino mic
 ## Theoretical description and explanation
 Max: *We wanna play a xylophone, but at the same time we don't! We want it to play by itself...*
 
-The project involves programming an Arduino microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/MIDI file. This requires an additional pre-processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. Relevant information such as the note being played will be displayed on an OLED display.
+The project involves programming an Arduino microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/MIDI file. This requires an additional pre-processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. The note being played is to be displayed on an OLED display.
 
-The MID file is first processed in a C program on PC. The [MIDI format](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html) is an extensive specification. Only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also the limited resources of the microcontroller, the pre-processing is done on PC.
+The MID file is first processed in a program on PC, written in C. The [MIDI format](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html) is an extensive specification and only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also beacause of the limited resources of the microcontroller, pre-processing is done on PC.
 
-The pre-processed data is sent to the microcontroller via USB. For PC - Arduino communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. The data transfer "programming" mode and playing mode is determined by a shorted pin on the board. In the playing mode, I2C is again used to load the blocks of data from EEPROM. 
+The data saved in a file with extension `.MXY` is sent to the microcontroller via USB. For PC - Arduino communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. In our implementation, the playing mode immediately follows the upload process. I2C is used to load the blocks of data from EEPROM (and memory) and signals are sent to the xylophone pins. 
 
 ## Hardware description
 #### Xylophone
@@ -72,9 +73,9 @@ This is the structure of the project's source files including the libraries and 
     ├── pc                    # PC program for MID pre-processing
     └── platformio.ini        # PlatformIO framework config
 
-### Pins
+### Pins <sup>[pins.h](https://github.com/Th0rgrlm/Xylophone/blob/main/include/pins.h)</sup>
 
-In total, 8 pins are used for the notes of the xylophone. One other pin is reserved for the toggling of programming and playing mode.
+In total, 8 pins are used for the notes of the xylophone. One other pin is reserved for the eventual manual control of the programming and playing mode.
 
 ```c
 #define C1_PIN PD3
@@ -88,9 +89,9 @@ In total, 8 pins are used for the notes of the xylophone. One other pin is reser
 #define GPIO_PROGRAMM_MODE PC0
 ```
 
-### MIDI parser
+### MIDI parser <sup>[pc/main.c](https://github.com/Th0rgrlm/Xylophone/blob/main/pc/main.c)</sup>
 
-The PC sub-program reads and parses a MID/MIDI file to extract select MIDI events listed in a table below. Once the file is opened, the MIDI file’s header is verified in `verify_header(FILE* file)`. An output file is created where the parsed contents are written. The function `read_track` invokes reading of the individual commands:
+The PC sub-program reads and parses a MID/MIDI file to extract select MIDI events listed in a table below. Once the file is opened, the MIDI file’s header is verified in `verify_header(FILE* file)`. An output file with the extension `.MXY` is created and the parsed contents are written there. The function `read_track` invokes reading of the individual commands:
 
 ```c
 void read_track(FILE* midi_file, track_info_t* track, FILE* out_file)
@@ -110,7 +111,7 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
 ...
 ```
 
-#### Parsed MIDI events and their codes
+### MIDI events and their codes
 
 | **Event Type**      | **Event Code**  | **Note**   | **MIDI Code** |
 |---------------------|-----------------|------------|---------------|
@@ -126,29 +127,13 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
 | SysEx Start         | `0xF0`          |            |               |
 | SysEx Restart       | `0xF7`          |            |               |
 
-The new file is sent via UART to the Arduino board and saved in EEPROM. Then, a pin change will be used to switch to the playing mode.
+The new file is sent via UART to the Arduino board and saved in EEPROM. Then, the activation of playing mode follows: `song_fetch();` is followed by `song_play();`.
 
 ### Interrupt
 
-A change of voltage on a pin triggers an interrupt service routine that is responsible for rebooting the program in either the programming or playing mode.
+The original intention was to manually toggle between programming and playing mode by changing the voltage on a pin. An interrupt service routine would reset the program in either of the modes. Due to time constraints, this functionality was left out.
 
-```c
-ISR(PCINT0_vect)
-{
-	mode = !GPIO_read(&PORTC, GPIO_PROGRAMM_MODE);
-	if (mode == 0)
-	{
-        mode = 1;
-	}
-	else 
-	{
-		wdt_enable(0);
-		while (1);
-	}
-}
-```
-
-### Playing the xylophone
+### Playing the xylophone <sup>[xyl.c](https://github.com/Th0rgrlm/Xylophone/blob/main/src/xylophone/xyl.c), [main.c](https://github.com/Th0rgrlm/Xylophone/blob/main/src/main.c)</sup>
 
 The function responsible for making the xylophone play is straightforward. It sets the corresponding pin of the note to high:
 
@@ -174,7 +159,7 @@ void xyl_play_note(notes_e note){
 }
 ```
 
-The function is again called in the main program loop, as indicated in the following snippet. Note that the value is also shown on the OLED display. The delay of 40 milliseconds was chosen as a compromise between delay length and the force of the shooting coils.
+The function is called again after a note is played in the main program loop, as indicated in the following snippet. Calling `xyl_play_note(notes_e note)` with `NONE` argument sets all note pins to low.
 
 ```c
 song_ptr++;
@@ -184,9 +169,48 @@ xyl_play_note(NONE);
 display_note(value);
 ```
 
+The delay of 40 milliseconds was chosen as a compromise between delay length and the force of the shooting coils. Do not confuse this delay with the delay *between notes*, which is specified in the Delay message (code from `main.c`):
+
+```c
+case STATUS_DELAY_1: // On 1st delay byte
+{
+	delay += 256 * song[song_pos++]; // Get 1st delay byte
+	new_status = STATUS_DELAY_2; // Next byte is 2nd byte of delay
+	break;
+}
+case STATUS_DELAY_2: // On 2nd delay byte
+{
+	delay += song[song_pos++]; // Get 2nd delay byte
+	delay_ms(delay); // Play delay
+	delay = 0; // Reset delay
+	new_status = STATUS_NOTE; // Next byte is note specifier
+	break;
+}
+```
+
+The tempo of the song can be easily changed in the MID file header. Tempo has the identifier `0x51`.
+
+## What we learned
+
+Delay function's argument must be a runtime constant.
+```c
+void delay_ms(uint16_t delay)
+{
+	while (delay--)
+	{
+		_delay_ms(1);
+	}
+}
+```
+
+Xylophone can't play notes simultaneously. There is an audible delay of a few ms.
+
+EEPROM page size is tiny
+
 ## How to use
 Connect xylophone to pins 3-10 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
+add info how to use parser and how to prepare and export notes
 
 ## Short video
 
@@ -196,7 +220,7 @@ Connect xylophone to pins 3-10 and to ground, after this, the logical zero will 
 
 [PlatformIO](https://platformio.org/)
 
-[SimulIDE](https://simulide.com/p/)
+[Make](https://www.make.com/en)
 
 [Inkscape](https://inkscape.org/)
 
