@@ -132,6 +132,23 @@ The PC app is a console app and requires two additional arguments to be run. The
 
 The new file in .mxy format is sent via UART to the Arduino board and saved in EEPROM (function `song_fetch()` on AVR). Then, the activation of playing mode is done by `song_play()`.
 
+Example HEX code in the simplified MXY format:
+
+```
+00 01 36 00 00 12 00 01 8A 00 01 39
+00 01 36 00 00 1F 00 01 20 01 00 05
+CF 00 00 03 02 00 05 CF 00 00 03 03
+00 05 CF 00 00 03 04 00 05 CF 00 00
+03 05 00 05 CF 00 00 03 06 00 05 CF
+00 00 03 07 00 05 CF 00 00 03 08 00
+05 CF 00 00 03 08 00 0B A2 00 00 03
+07 00 02 E6 00 00 03 06 00 02 E6 00
+00 03 05 00 05 CF 00 00 03 04 00 0B
+A2 00 0B A8 03 00 05 CF 00 00 03 02
+00 02 E6 00 00 03 01 00 08 B8 00 00
+03 FF
+```
+
 ### Interrupt
 
 The original intention was to manually toggle between programming and playing mode by changing the voltage on a pin. An interrupt service routine would reset the program in either of the modes. Due to time constraints, this functionality was left out.
