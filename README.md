@@ -228,7 +228,11 @@ add info how to use parser and how to prepare and export notes
 
 [Inkscape](https://inkscape.org/)
 
-[MuseScore 4](https://musescore.org/)
+[MuseScore 4](https://musescore.org/) - sheet music editor with MID export
+
+[pianotify](https://pianotify.com) - online MID player
+
+[bitmidi.com](https://bitmidi.com) - free MID files
 
 ## References
 
