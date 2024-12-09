@@ -88,7 +88,6 @@ typedef struct track_info
     uint32_t track_tempo_us;
     uint32_t time_signature;
     uint16_t key_signature;
-    uint16_t ticks_per_quarter;
 } track_info_t;
 
 /**
@@ -223,16 +222,18 @@ int main(int argc, uint8_t* argv[])
     ///////////////////////
     // Convert MIDI file //
     ///////////////////////
-    if (argc != 3)
-    {
-        fprintf(stderr, "Insufficient arguments: %i, expected 2", argc - 1);
-        return ERROR_ARGS;
-    }
-    uint8_t* path = argv[1];
-    uint8_t COM = strtol(argv[2], NULL, 10);
+    // if (argc != 3)
+    // {
+    //     fprintf(stderr, "Insufficient arguments: %i, expected 2", argc - 1);
+    //     return ERROR_ARGS;
+    // }
+    // uint8_t* path = argv[1];
+    // uint8_t COM = strtol(argv[2], NULL, 10);
+    uint8_t COM = 0;
 
     printf("Loading midi file...\n");
-    FILE* f = fopen(path, "rb");
+    // FILE* f = fopen(path, "rb");
+    FILE* f = fopen("C:\\Users\\mgaho\\Documents\\Martin\\School\\VUT\\5_semestr\\DE2\\project\\Xylophone\\pc\\test.mid", "rb");
     if (f == NULL)
     {
         fprintf(stderr, "Failed to load midi file: %i.\n", errno);
@@ -388,7 +389,7 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
 
 void create_delay(int64_t delta_time, track_info_t* track, FILE* out_file)
 {
-    uint16_t delay_ms = delta_time * track->track_tempo_us / 1000 / track->ticks_per_quarter / 2; // Convert to ms
+    uint16_t delay_ms = delta_time * track->track_tempo_us / 1000 / midi_info.ticks_per_quarter; // Convert to ms
     fprintf(out_file, "%c%c%c", DELAY, delay_ms >> 8, delay_ms & 0x00FF); // Write bytes to output file
     return;
 }
