@@ -1,7 +1,9 @@
 /**
  * @file disp.h
+ * @defgroup xylophone_disp Display Library <disp.h>
+ * @code #include <disp.h> @endcode
+ * @brief Display control.
  * @author Jonas (114212657+VUT246843@users.noreply.github.com)
- * @brief 
  * @version 0.1
  * @date 2024-11-13
  * 

@@ -1,0 +1,69 @@
+\doxysection{C\+:/\+Users/mgaho/\+Documents/\+Martin/\+School/\+VUT/5\+\_\+semestr/\+DE2/project/\+Xylophone/src/eeprom/eeprom.h File Reference}
+\hypertarget{eeprom_8h}{}\label{eeprom_8h}\index{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/src/eeprom/eeprom.h@{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/src/eeprom/eeprom.h}}
+{\ttfamily \#include "{}stdint.\+h"{}}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int32\+\_\+t \mbox{\hyperlink{eeprom_8h_aac8a46f2af0cc8cea8e7abdb9e2f1462}{eeprom\+\_\+read}} (uint32\+\_\+t addr, uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, uint16\+\_\+t num\+\_\+bytes)
+\begin{DoxyCompactList}\small\item\em Reads bytes from EEPROM. \end{DoxyCompactList}\item 
+int32\+\_\+t \mbox{\hyperlink{eeprom_8h_a9fcb2bc4162cc88896f80e2ba3f29810}{eeprom\+\_\+write}} (uint32\+\_\+t addr, uint8\+\_\+t \texorpdfstring{$\ast$}{*}buffer, uint16\+\_\+t num\+\_\+bytes)
+\begin{DoxyCompactList}\small\item\em Writes bytes to EEPROM. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Matúš Citor (\href{mailto:246797@vutbr.cz}{\texttt{ 246797@vutbr.\+cz}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2024-\/11-\/20 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{eeprom_8h_aac8a46f2af0cc8cea8e7abdb9e2f1462}\index{eeprom.h@{eeprom.h}!eeprom\_read@{eeprom\_read}}
+\index{eeprom\_read@{eeprom\_read}!eeprom.h@{eeprom.h}}
+\doxysubsubsection{\texorpdfstring{eeprom\_read()}{eeprom\_read()}}
+{\footnotesize\ttfamily \label{eeprom_8h_aac8a46f2af0cc8cea8e7abdb9e2f1462} 
+int32\+\_\+t eeprom\+\_\+read (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{addr}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{uint16\+\_\+t}]{num\+\_\+bytes}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Reads bytes from EEPROM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em addr} & Address in the EEPROM to read from \\
+\hline
+{\em buffer} & Output buffer the read data will be saved to \\
+\hline
+{\em num\+\_\+bytes} & Number of bytes to read \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int32\+\_\+t Return code 
+\end{DoxyReturn}
+\Hypertarget{eeprom_8h_a9fcb2bc4162cc88896f80e2ba3f29810}\index{eeprom.h@{eeprom.h}!eeprom\_write@{eeprom\_write}}
+\index{eeprom\_write@{eeprom\_write}!eeprom.h@{eeprom.h}}
+\doxysubsubsection{\texorpdfstring{eeprom\_write()}{eeprom\_write()}}
+{\footnotesize\ttfamily \label{eeprom_8h_a9fcb2bc4162cc88896f80e2ba3f29810} 
+int32\+\_\+t eeprom\+\_\+write (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{addr}{, }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{buffer}{, }\item[{uint16\+\_\+t}]{num\+\_\+bytes}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [extern]}}
+
+
+
+Writes bytes to EEPROM. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em addr} & Address in the EEPROM to write to \\
+\hline
+{\em buffer} & Data to write to EEPROM \\
+\hline
+{\em num\+\_\+bytes} & Number of bytes to write \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int32\+\_\+t Return code 
+\end{DoxyReturn}

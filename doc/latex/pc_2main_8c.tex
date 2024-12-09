@@ -1,0 +1,466 @@
+\doxysection{C\+:/\+Users/mgaho/\+Documents/\+Martin/\+School/\+VUT/5\+\_\+semestr/\+DE2/project/\+Xylophone/pc/main.c File Reference}
+\hypertarget{pc_2main_8c}{}\label{pc_2main_8c}\index{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/pc/main.c@{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/pc/main.c}}
+
+
+MIDI file parser.  
+
+
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include "{}./error\+\_\+codes.\+h"{}}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+{\ttfamily \#include $<$inttypes.\+h$>$}\newline
+{\ttfamily \#include $<$unistd.\+h$>$}\newline
+{\ttfamily \#include "{}./uart\+\_\+pc.\+h"{}}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_m_i_d_i___i_n_f_o}{MIDI\+\_\+\+INFO}}
+\item 
+struct \mbox{\hyperlink{structtrack__info}{track\+\_\+info}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{pc_2main_8c_a97d9d0b744a83cc89be02ce7f9e3a15c}\label{pc_2main_8c_a97d9d0b744a83cc89be02ce7f9e3a15c} 
+\#define {\bfseries ERROR\+\_\+\+COM\+\_\+\+WRITE}~-\/15
+\item 
+\Hypertarget{pc_2main_8c_a7882699bee410022b553b0e10e91c35b}\label{pc_2main_8c_a7882699bee410022b553b0e10e91c35b} 
+\#define {\bfseries TRACK\+\_\+\+MAX\+\_\+\+SIZE}~4096
+\item 
+\Hypertarget{pc_2main_8c_aa064eec4467c994699acb902d0098190}\label{pc_2main_8c_aa064eec4467c994699acb902d0098190} 
+\#define {\bfseries TRACK\+\_\+\+MAX\+\_\+\+LEN}~64
+\item 
+\Hypertarget{pc_2main_8c_afd279d69ff0ec3cbaf972cf32d33fc9b}\label{pc_2main_8c_afd279d69ff0ec3cbaf972cf32d33fc9b} 
+\#define {\bfseries INSTRUMENT\+\_\+\+MAX\+\_\+\+LEN}~64
+\item 
+\Hypertarget{pc_2main_8c_aa982414a1e7b5645b4622a4256318ff1}\label{pc_2main_8c_aa982414a1e7b5645b4622a4256318ff1} 
+\#define {\bfseries META\+\_\+\+EVENT}~0x\+FF
+\item 
+\Hypertarget{pc_2main_8c_ab40eadc3fa1048be02eda35efb995ff6}\label{pc_2main_8c_ab40eadc3fa1048be02eda35efb995ff6} 
+\#define {\bfseries SYSEX\+\_\+\+EVENT\+\_\+\+START}~0x\+F0
+\item 
+\Hypertarget{pc_2main_8c_aa71e49bee861190538fe11980b8bdc77}\label{pc_2main_8c_aa71e49bee861190538fe11980b8bdc77} 
+\#define {\bfseries SYSEX\+\_\+\+EVENT\+\_\+\+RESTART}~0x\+F7
+\item 
+\Hypertarget{pc_2main_8c_a4259def83bd534a786edb4408fec67f0}\label{pc_2main_8c_a4259def83bd534a786edb4408fec67f0} 
+\#define {\bfseries MIDI\+\_\+\+NOTE\+\_\+\+OFF}~0x80
+\item 
+\Hypertarget{pc_2main_8c_acb743a02e36b618a4bd1990671b3325f}\label{pc_2main_8c_acb743a02e36b618a4bd1990671b3325f} 
+\#define {\bfseries MIDI\+\_\+\+NOTE\+\_\+\+ON}~0x90
+\item 
+\Hypertarget{pc_2main_8c_ac23984b0253ada050bef4789d3664a69}\label{pc_2main_8c_ac23984b0253ada050bef4789d3664a69} 
+\#define {\bfseries MIDI\+\_\+\+CONTROL\+\_\+\+CHANGE}~0x\+B0
+\item 
+\Hypertarget{pc_2main_8c_ab04c7929395e74a016d7ea69f0fc1a21}\label{pc_2main_8c_ab04c7929395e74a016d7ea69f0fc1a21} 
+\#define {\bfseries META\+\_\+\+TRACK\+\_\+\+NAME}~0x03
+\item 
+\Hypertarget{pc_2main_8c_a60ee76622ddaf5e2744744546dba11d0}\label{pc_2main_8c_a60ee76622ddaf5e2744744546dba11d0} 
+\#define {\bfseries META\+\_\+\+INSTRUMENT\+\_\+\+NAME}~0x04
+\item 
+\Hypertarget{pc_2main_8c_a93f8df553f556c858f08cd11f78b2486}\label{pc_2main_8c_a93f8df553f556c858f08cd11f78b2486} 
+\#define {\bfseries META\+\_\+\+TRACK\+\_\+\+END}~0x2F
+\item 
+\Hypertarget{pc_2main_8c_ae7e7f8a0f6cbb19b91713bec6c9d15d5}\label{pc_2main_8c_ae7e7f8a0f6cbb19b91713bec6c9d15d5} 
+\#define {\bfseries META\+\_\+\+SET\+\_\+\+TEMPO}~0x51
+\item 
+\Hypertarget{pc_2main_8c_adb788320d9004a69de5d51d78f7eae15}\label{pc_2main_8c_adb788320d9004a69de5d51d78f7eae15} 
+\#define {\bfseries META\+\_\+\+TIME\+\_\+\+SIGNATURE}~0x58
+\item 
+\Hypertarget{pc_2main_8c_a11bd7430743f946cca6ec9a44c21fae5}\label{pc_2main_8c_a11bd7430743f946cca6ec9a44c21fae5} 
+\#define {\bfseries META\+\_\+\+KEY\+\_\+\+SIGNATURE}~0x59
+\item 
+\Hypertarget{pc_2main_8c_a1707241591c55acccdce82ad7c20cba9}\label{pc_2main_8c_a1707241591c55acccdce82ad7c20cba9} 
+\#define {\bfseries MIDI\+\_\+\+C1}~60
+\item 
+\Hypertarget{pc_2main_8c_a11cd338c9298200d7bdf32cf98dae088}\label{pc_2main_8c_a11cd338c9298200d7bdf32cf98dae088} 
+\#define {\bfseries MIDI\+\_\+\+D1}~62
+\item 
+\Hypertarget{pc_2main_8c_a8d9d0f177683449295356bef87aeb1de}\label{pc_2main_8c_a8d9d0f177683449295356bef87aeb1de} 
+\#define {\bfseries MIDI\+\_\+\+E1}~64
+\item 
+\Hypertarget{pc_2main_8c_acd1df571d27e1122d26365da4ae3eac5}\label{pc_2main_8c_acd1df571d27e1122d26365da4ae3eac5} 
+\#define {\bfseries MIDI\+\_\+\+F1}~65
+\item 
+\Hypertarget{pc_2main_8c_a25d0583941a4aec570c1a71b58f67c7e}\label{pc_2main_8c_a25d0583941a4aec570c1a71b58f67c7e} 
+\#define {\bfseries MIDI\+\_\+\+G1}~67
+\item 
+\Hypertarget{pc_2main_8c_afb675fa129f1ebff6eee44314deccff7}\label{pc_2main_8c_afb675fa129f1ebff6eee44314deccff7} 
+\#define {\bfseries MIDI\+\_\+\+A1}~69
+\item 
+\Hypertarget{pc_2main_8c_a5579d92f5dfef2f9e9d416904b48c411}\label{pc_2main_8c_a5579d92f5dfef2f9e9d416904b48c411} 
+\#define {\bfseries MIDI\+\_\+\+B1}~71
+\item 
+\Hypertarget{pc_2main_8c_a04a107cdfff8f82e0a2f73245cd52095}\label{pc_2main_8c_a04a107cdfff8f82e0a2f73245cd52095} 
+\#define {\bfseries MIDI\+\_\+\+C2}~72
+\item 
+\Hypertarget{pc_2main_8c_a070f13fb864e218cfc9662ac58cf5855}\label{pc_2main_8c_a070f13fb864e218cfc9662ac58cf5855} 
+\#define {\bfseries N\+\_\+\+TRACKS}~1
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{pc_2main_8c_a36fb5296c25f10e2efd2009ff190d27d}\label{pc_2main_8c_a36fb5296c25f10e2efd2009ff190d27d} 
+typedef enum \mbox{\hyperlink{structs_8h_adfbdbc36baee852981842d731e0ccf6d}{notes}} {\bfseries notes\+\_\+e}
+\item 
+\Hypertarget{pc_2main_8c_a704f4379c308c4ad890869919ec20a7d}\label{pc_2main_8c_a704f4379c308c4ad890869919ec20a7d} 
+typedef struct \mbox{\hyperlink{structtrack__info}{track\+\_\+info}} {\bfseries track\+\_\+info\+\_\+t}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{pc_2main_8c_adfbdbc36baee852981842d731e0ccf6d}\label{pc_2main_8c_adfbdbc36baee852981842d731e0ccf6d} 
+enum {\bfseries notes} \{ \newline
+{\bfseries DELAY} = 0
+, {\bfseries C1} = 1
+, {\bfseries D1} = 2
+, {\bfseries E1} = 3
+, \newline
+{\bfseries F1} = 4
+, {\bfseries G1} = 5
+, {\bfseries A1} = 6
+, {\bfseries B1} = 7
+, \newline
+{\bfseries C2} = 8
+, {\bfseries END} = 0x\+FF
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{pc_2main_8c_a6d00cda95a265aa44fab42f0bf5f70b1}{verify\+\_\+header}} (FILE \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em Function for MIDI header verification. \end{DoxyCompactList}\item 
+int32\+\_\+t \mbox{\hyperlink{pc_2main_8c_a07af88420ea54a5ae8f84c37bfff285e}{get\+\_\+track\+\_\+pointers}} (FILE \texorpdfstring{$\ast$}{*}midi\+\_\+file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}pointers, uint8\+\_\+t n\+\_\+ptrs)
+\begin{DoxyCompactList}\small\item\em Get the start of the tracks. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{pc_2main_8c_ae9096184487d9a0e07bafce10533b052}{read\+\_\+track}} (FILE \texorpdfstring{$\ast$}{*}midi\+\_\+file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Reads and parses single track. \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{pc_2main_8c_ac0146909a72a990b6d7e1fbe6e29a10e}{read\+\_\+command}} (FILE \texorpdfstring{$\ast$}{*}midi\+\_\+file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Reads and parses single command from a current track position. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{pc_2main_8c_acd4a69dd2066aedd7e45083c552b8dfb}{create\+\_\+delay}} (int64\+\_\+t delta\+\_\+time, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Creates a delay in a track between notes. \end{DoxyCompactList}\item 
+int64\+\_\+t \mbox{\hyperlink{pc_2main_8c_a46aa099147a019f7353ee59d935a00c9}{read\+\_\+delta\+\_\+time}} (FILE \texorpdfstring{$\ast$}{*}midi\+\_\+file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track)
+\begin{DoxyCompactList}\small\item\em Reads delta time as a variable length value. \end{DoxyCompactList}\item 
+int64\+\_\+t \mbox{\hyperlink{pc_2main_8c_a79c4eafcfaac8abaf89cc50a2420fc0a}{read\+\_\+var\+\_\+len}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track)
+\begin{DoxyCompactList}\small\item\em Reads variable length value. \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{pc_2main_8c_af24c1ac95f995bb92ae323e29c2586eb}{read\+\_\+byte}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track)
+\begin{DoxyCompactList}\small\item\em Reads single byte from the MIDI file. \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{pc_2main_8c_a8a41c02c33bd52fb275482bc4fa9f126}{parse\+\_\+command}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, uint8\+\_\+t data\+\_\+byte\+\_\+1, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Parses a command saved in track structure. \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{pc_2main_8c_ab91e52a1355e620c0ae63b7796e97691}{parse\+\_\+meta\+\_\+event}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, uint8\+\_\+t meta\+\_\+command, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Parses Meta event. \end{DoxyCompactList}\item 
+int16\+\_\+t \mbox{\hyperlink{pc_2main_8c_ace2664a1273aa769eaaab82e23e904da}{parse\+\_\+midi\+\_\+event}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}track, uint8\+\_\+t data\+\_\+byte\+\_\+1, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Parses MIDI event. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{pc_2main_8c_af984c956c3abc0d38dd3644c2cd73a2b}{create\+\_\+note}} (\mbox{\hyperlink{structs_8h_a36fb5296c25f10e2efd2009ff190d27d}{notes\+\_\+e}} note, uint8\+\_\+t velocity, FILE \texorpdfstring{$\ast$}{*}out\+\_\+file)
+\begin{DoxyCompactList}\small\item\em Writes a note to the output file. \end{DoxyCompactList}\item 
+uint64\+\_\+t \mbox{\hyperlink{pc_2main_8c_a4e551a09e05722568d8911a9e312846a}{hex2uint}} (const char \texorpdfstring{$\ast$}{*}hexstr, uint8\+\_\+t hexstr\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Converts hex value in big endian to uint64\+\_\+t. \end{DoxyCompactList}\item 
+\Hypertarget{pc_2main_8c_ae47d623127f499c98a1dc3112dadb5a0}\label{pc_2main_8c_ae47d623127f499c98a1dc3112dadb5a0} 
+int {\bfseries main} (int argc, uint8\+\_\+t \texorpdfstring{$\ast$}{*}argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{pc_2main_8c_ab297e8b6af734888d3dc2cfe335a9d44}\label{pc_2main_8c_ab297e8b6af734888d3dc2cfe335a9d44} 
+FILE \texorpdfstring{$\ast$}{*} {\bfseries out\+\_\+file}
+\item 
+\Hypertarget{pc_2main_8c_aaf4aaa337163d5b384f96ee91bc7dc30}\label{pc_2main_8c_aaf4aaa337163d5b384f96ee91bc7dc30} 
+uint8\+\_\+t {\bfseries out\+\_\+file\+\_\+path} \mbox{[}$\,$\mbox{]} = "{}.\textbackslash{}\textbackslash{}out.\+mxy"{}
+\item 
+\Hypertarget{pc_2main_8c_a832c39ad51391baa4d9d7aca48b80134}\label{pc_2main_8c_a832c39ad51391baa4d9d7aca48b80134} 
+struct \mbox{\hyperlink{struct_m_i_d_i___i_n_f_o}{MIDI\+\_\+\+INFO}} {\bfseries midi\+\_\+info}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+MIDI file parser. 
+
+\begin{DoxyAuthor}{Author}
+Martin Garncarz (\href{mailto:246815@vutbr.cz}{\texttt{ 246815@vutbr.\+cz}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2024-\/11-\/26
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2024 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{pc_2main_8c_acd4a69dd2066aedd7e45083c552b8dfb}\index{main.c@{main.c}!create\_delay@{create\_delay}}
+\index{create\_delay@{create\_delay}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{create\_delay()}{create\_delay()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_acd4a69dd2066aedd7e45083c552b8dfb} 
+void create\+\_\+delay (\begin{DoxyParamCaption}\item[{int64\+\_\+t}]{delta\+\_\+time}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Creates a delay in a track between notes. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em delta\+\_\+time} & Length of the delay \\
+\hline
+{\em track} & Track structure containing tempo information \\
+\hline
+{\em out\+\_\+file} & Output file to save the delay to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{pc_2main_8c_af984c956c3abc0d38dd3644c2cd73a2b}\index{main.c@{main.c}!create\_note@{create\_note}}
+\index{create\_note@{create\_note}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{create\_note()}{create\_note()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_af984c956c3abc0d38dd3644c2cd73a2b} 
+void create\+\_\+note (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structs_8h_a36fb5296c25f10e2efd2009ff190d27d}{notes\+\_\+e}}}]{note}{, }\item[{uint8\+\_\+t}]{velocity}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Writes a note to the output file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em note} & Note to write \\
+\hline
+{\em velocity} & Velocity of the note (0 means off, any other on) \\
+\hline
+{\em out\+\_\+file} & Output file to write the note to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{pc_2main_8c_a07af88420ea54a5ae8f84c37bfff285e}\index{main.c@{main.c}!get\_track\_pointers@{get\_track\_pointers}}
+\index{get\_track\_pointers@{get\_track\_pointers}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{get\_track\_pointers()}{get\_track\_pointers()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a07af88420ea54a5ae8f84c37bfff285e} 
+int32\+\_\+t get\+\_\+track\+\_\+pointers (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{midi\+\_\+file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{pointers}{, }\item[{uint8\+\_\+t}]{n\+\_\+ptrs}{}\end{DoxyParamCaption})}
+
+
+
+Get the start of the tracks. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em midi\+\_\+file} & File to read the pointers from \\
+\hline
+{\em pointers} & Structure to save the pointers into (start track) \\
+\hline
+{\em n\+\_\+ptrs} & Number of tracks to read \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int32\+\_\+t Error code 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_a4e551a09e05722568d8911a9e312846a}\index{main.c@{main.c}!hex2uint@{hex2uint}}
+\index{hex2uint@{hex2uint}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{hex2uint()}{hex2uint()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a4e551a09e05722568d8911a9e312846a} 
+uint64\+\_\+t hex2uint (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{hexstr}{, }\item[{uint8\+\_\+t}]{hexstr\+\_\+len}{}\end{DoxyParamCaption})}
+
+
+
+Converts hex value in big endian to uint64\+\_\+t. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em hexstr} & hexadecimal string in big endian \\
+\hline
+{\em hexstr\+\_\+len} & length of the hexadecimal string \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+uint64\+\_\+t Converted uint64\+\_\+t value 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_a8a41c02c33bd52fb275482bc4fa9f126}\index{main.c@{main.c}!parse\_command@{parse\_command}}
+\index{parse\_command@{parse\_command}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{parse\_command()}{parse\_command()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a8a41c02c33bd52fb275482bc4fa9f126} 
+int16\+\_\+t parse\+\_\+command (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{uint8\+\_\+t}]{data\+\_\+byte\+\_\+1}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Parses a command saved in track structure. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & MIDI file to read additional bytes from if needed \\
+\hline
+{\em track} & Track to read from \\
+\hline
+{\em data\+\_\+byte\+\_\+1} & 1st argument of the command \\
+\hline
+{\em out\+\_\+file} & output file to save the read command output to \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Error code 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_ab91e52a1355e620c0ae63b7796e97691}\index{main.c@{main.c}!parse\_meta\_event@{parse\_meta\_event}}
+\index{parse\_meta\_event@{parse\_meta\_event}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{parse\_meta\_event()}{parse\_meta\_event()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_ab91e52a1355e620c0ae63b7796e97691} 
+int16\+\_\+t parse\+\_\+meta\+\_\+event (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{uint8\+\_\+t}]{meta\+\_\+command}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Parses Meta event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & MIDI file to read additional bytes from if needed \\
+\hline
+{\em track} & Track to read from \\
+\hline
+{\em meta\+\_\+command} & Meta command \\
+\hline
+{\em out\+\_\+file} & Output file to save the parsed meta event to \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Error code 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_ace2664a1273aa769eaaab82e23e904da}\index{main.c@{main.c}!parse\_midi\_event@{parse\_midi\_event}}
+\index{parse\_midi\_event@{parse\_midi\_event}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{parse\_midi\_event()}{parse\_midi\_event()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_ace2664a1273aa769eaaab82e23e904da} 
+int16\+\_\+t parse\+\_\+midi\+\_\+event (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{uint8\+\_\+t}]{data\+\_\+byte\+\_\+1}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Parses MIDI event. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & MIDI file to read additional bytes from if needed \\
+\hline
+{\em track} & Track to read from \\
+\hline
+{\em data\+\_\+byte\+\_\+1} & 1st byte of the MIDI event \\
+\hline
+{\em out\+\_\+file} & Output file to save the parsed MIDI event to \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Error code 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_af24c1ac95f995bb92ae323e29c2586eb}\index{main.c@{main.c}!read\_byte@{read\_byte}}
+\index{read\_byte@{read\_byte}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{read\_byte()}{read\_byte()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_af24c1ac95f995bb92ae323e29c2586eb} 
+int16\+\_\+t read\+\_\+byte (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{}\end{DoxyParamCaption})}
+
+
+
+Reads single byte from the MIDI file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & MIDI file to read the byte from \\
+\hline
+{\em track} & Track to read from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Output byte (negative values mean error) 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_ac0146909a72a990b6d7e1fbe6e29a10e}\index{main.c@{main.c}!read\_command@{read\_command}}
+\index{read\_command@{read\_command}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{read\_command()}{read\_command()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_ac0146909a72a990b6d7e1fbe6e29a10e} 
+int16\+\_\+t read\+\_\+command (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{midi\+\_\+file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Reads and parses single command from a current track position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em midi\+\_\+file} & File to read the command from \\
+\hline
+{\em track} & Track structure to read the current position from \\
+\hline
+{\em out\+\_\+file} & Output file to save the parsed command \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Error code 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_a46aa099147a019f7353ee59d935a00c9}\index{main.c@{main.c}!read\_delta\_time@{read\_delta\_time}}
+\index{read\_delta\_time@{read\_delta\_time}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{read\_delta\_time()}{read\_delta\_time()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a46aa099147a019f7353ee59d935a00c9} 
+int64\+\_\+t read\+\_\+delta\+\_\+time (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{midi\+\_\+file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{}\end{DoxyParamCaption})}
+
+
+
+Reads delta time as a variable length value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em midi\+\_\+file} & File to read the delta time from \\
+\hline
+{\em track} & Track to read from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int64\+\_\+t Output delta time 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_ae9096184487d9a0e07bafce10533b052}\index{main.c@{main.c}!read\_track@{read\_track}}
+\index{read\_track@{read\_track}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{read\_track()}{read\_track()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_ae9096184487d9a0e07bafce10533b052} 
+void read\+\_\+track (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{midi\+\_\+file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{out\+\_\+file}{}\end{DoxyParamCaption})}
+
+
+
+Reads and parses single track. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em midi\+\_\+file} & File to read the track from \\
+\hline
+{\em track} & Track to be read and parsed, contains saved information about the track \\
+\hline
+{\em out\+\_\+file} & Output file to save the parsed track \\
+\hline
+\end{DoxyParams}
+\Hypertarget{pc_2main_8c_a79c4eafcfaac8abaf89cc50a2420fc0a}\index{main.c@{main.c}!read\_var\_len@{read\_var\_len}}
+\index{read\_var\_len@{read\_var\_len}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{read\_var\_len()}{read\_var\_len()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a79c4eafcfaac8abaf89cc50a2420fc0a} 
+int64\+\_\+t read\+\_\+var\+\_\+len (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{structtrack__info}{track\+\_\+info\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{track}{}\end{DoxyParamCaption})}
+
+
+
+Reads variable length value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & File to read the value from \\
+\hline
+{\em track} & Track to read from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int64\+\_\+t Output variable length value 
+\end{DoxyReturn}
+\Hypertarget{pc_2main_8c_a6d00cda95a265aa44fab42f0bf5f70b1}\index{main.c@{main.c}!verify\_header@{verify\_header}}
+\index{verify\_header@{verify\_header}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{verify\_header()}{verify\_header()}}
+{\footnotesize\ttfamily \label{pc_2main_8c_a6d00cda95a265aa44fab42f0bf5f70b1} 
+bool verify\+\_\+header (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{}\end{DoxyParamCaption})}
+
+
+
+Function for MIDI header verification. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & File to verify the header of \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if file is a valid MIDI file 
+
+false if file is not a MIDI file 
+\end{DoxyReturn}

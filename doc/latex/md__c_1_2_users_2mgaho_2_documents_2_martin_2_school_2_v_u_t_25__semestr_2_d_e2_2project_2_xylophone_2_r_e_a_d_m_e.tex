@@ -1,0 +1,214 @@
+\chapter{DE2 project\+: Electronically controlled xylophone}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e}{}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e}\index{DE2 project: Electronically controlled xylophone@{DE2 project: Electronically controlled xylophone}}
+\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md0}%
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{Table of Contents}{Table of Contents}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Original assignment
+\item Team
+\item Theoretical Description and Explanation
+\item Hardware description
+\item Software Description
+\item What we learned
+\item How to use
+\item Video
+\item Tools
+\item References
+\end{DoxyItemize}\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md2}{}\doxysection{\texorpdfstring{Original assignment}{Original assignment}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md2}
+Build an electronic xylophone instrument that can be played using an Arduino microcontroller. The project will combine hardware and software components to create an interactive and programmable musical instrument capable of producing different tones and melodies. Incorporating a graphical user interface (GUI) to visualize the notes being played.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md3}{}\doxysection{\texorpdfstring{Team}{Team}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md3}
+Martin G\+: Matúš C\+: Jonáš H\+: Max G\+:\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md4}{}\doxysection{\texorpdfstring{Theoretical description and explanation}{Theoretical description and explanation}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md4}
+Max\+: {\itshape We wanna play a xylophone, but at the same time we don\textquotesingle{}t! We want it to play by itself...}
+
+The project involves programming an Arduino microcontroller. The microcontroller will control a xylophone that can play 8 keys (C1-\/\+C2, 1 octave) using coils. We decided to expand the functionality to enable automatic playing of any MID/\+MIDI file. This requires an additional pre-\/processing subprogram to extract the relevant and usable information from the file and an EEPROM memory to store the note instructions on the microcontroller. The note being played is to be displayed on an OLED display.
+
+The MID file is first processed in a program on PC, written in C. The \href{https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html}{\texttt{ MIDI format}} is an extensive specification and only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also beacause of the limited resources of the microcontroller, pre-\/processing is done on PC.
+
+The data saved in a file with custom extension {\ttfamily .MXY} is sent to the microcontroller via USB. For PC -\/ Arduino communication, UART is used. The blocks of data are stored in the board\textquotesingle{}s RAM so they can be sent via I\textsuperscript{2}C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. In our implementation, the playing mode immediately follows the upload process. I\textsuperscript{2}C is used to load the blocks of data from EEPROM (and memory) and signals are sent to the xylophone pins.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md5}{}\doxysection{\texorpdfstring{Hardware description}{Hardware description}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md5}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md6}{}\doxysubsubsection{\texorpdfstring{Xylophone}{Xylophone}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md6}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md7}{}\doxysection{\texorpdfstring{autotoc\+\_\+md7}{autotoc\+\_\+md7}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md7}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md8}{}\doxysubsubsection{\texorpdfstring{OLED display}{OLED display}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md8}
+ \hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md9}{}\doxysection{\texorpdfstring{autotoc\+\_\+md9}{autotoc\+\_\+md9}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md9}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md10}{}\doxysubsubsection{\texorpdfstring{Clock\+: DS3231\+SN 0912A3 208AB (larger), EEPROM\+: ATHYC532 (smaller)}{Clock\+: DS3231\+SN 0912A3 208AB (larger), EEPROM\+: ATHYC532 (smaller)}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md10}
+ \hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md11}{}\doxysection{\texorpdfstring{autotoc\+\_\+md11}{autotoc\+\_\+md11}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md11}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md12}{}\doxysubsubsection{\texorpdfstring{Arduino + breadboard}{Arduino + breadboard}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md12}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md13}{}\doxysection{\texorpdfstring{Software description}{Software description}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md13}
+This is the structure of the project\textquotesingle{}s source files including the libraries and PC subprogram\+: \begin{DoxyVerb}.
+├── include
+│     ├── pins.h        # Arduino pins
+│     ├── structs.h     # Enum of note, pause and end events
+│     ├── constants.h   # Buffer size constants
+│     └── error_codes.h # Error codes definitions
+├── lib
+│     ├── gpio            # GPIO library (c) Tomas Fryza
+│     ├── oled            # OLED display library (c) Skie-Systems
+│     ├── twi             # I2C/TWI library (c) Tomas Fryza
+│     └── uart            # UART library with r/t circular buffers (c) Peter Fleury
+├── src
+│     ├── main.c          # main program loop, init logic and interrupts
+│     ├── display         # functions to display data on OLED
+│     ├── eeprom          # EEPROM read/write functions
+│     └── xylophone       # play note functions
+├── pc                    # PC utility for MID pre-processing
+|     ├── main.c          # MID convertor to MXY
+|     ├── uart_pc.h       # PC UART communication with AVR
+│     └── error_codes.h   # Error codes definitions for PC utility
+└── platformio.ini        # PlatformIO framework config
+\end{DoxyVerb}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md14}{}\doxysubsection{\texorpdfstring{Pins \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/include/pins.h}{\texttt{ pins.\+h}}}}{Pins \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/include/pins.h}{\texttt{ pins.\+h}}}}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md14}
+In total, 8 pins are used for the notes of the xylophone. One other pin is reserved for the eventual manual control of the programming and playing mode.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ C1\_PIN\ PD3}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ D1\_PIN\ PD4}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ E1\_PIN\ PD5}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ F1\_PIN\ PD6}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ G1\_PIN\ PD7}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ A1\_PIN\ PB0}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ B1\_PIN\ PB1}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ C2\_PIN\ PB2}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ GPIO\_PROGRAMM\_MODE\ PC0}}
+
+\end{DoxyCode}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md15}{}\doxysubsection{\texorpdfstring{MIDI parser \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/pc/main.c}{\texttt{ pc/main.\+c}}}}{MIDI parser \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/pc/main.c}{\texttt{ pc/main.\+c}}}}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md15}
+The PC sub-\/program reads and parses a MID/\+MIDI file to extract select MIDI events listed in a table below. Once the file is opened, the MIDI file’s header is verified in {\ttfamily verify\+\_\+header(\+FILE\texorpdfstring{$\ast$}{*} file)}. An output file with the extension {\ttfamily .mxy} is created and the parsed contents are written there. The function {\ttfamily read\+\_\+track} invokes reading of the individual commands\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ read\_track(FILE*\ midi\_file,\ \mbox{\hyperlink{structtrack__info}{track\_info\_t}}*\ track,\ FILE*\ out\_file)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ int16\_t\ result\ =\ 0;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ (result\ !=\ END\ \&\&\ result\ !=\ ERROR\_POS)\ }
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ N\_TRACKS;\ i++)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ result\ =\ read\_command(midi\_file,\ \ \&track[i],\ out\_file);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}Parsing\ result:\ \%d\(\backslash\)n"{}},\ result\ ==\ END\ ?\ SUCCESS\ :\ result);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{int16\_t\ read\_command(FILE*\ midi\_file,\ \mbox{\hyperlink{structtrack__info}{track\_info\_t}}*\ track,\ FILE*\ out\_file)}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+ The PC app is a console app and requires two additional arguments to be run. The first one is exact path of the file to be converted, the second one is COM port number the converted should be sent to. After that, the program will confirm the supplied file is an actual .mid file and converts it to a .mxy file. After that, the UART communication between PC and Arduino will begin. The file is sent in chunks of 256 bytes (because of RX receive buffer of the AVR). After each chunk is sent, Arduino checks for track end and writes the chunk to EEPROM. If no track end was found, it requests another chunk by sending `\textquotesingle{}C'{\ttfamily , otherwise it ends the communication by sending}\textquotesingle{}A\textquotesingle{}\`{}.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md16}{}\doxysubsection{\texorpdfstring{MIDI events and their codes}{MIDI events and their codes}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md16}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{5}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Event Type}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Event Code}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Note}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{MIDI Code}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{MXY Code}}    }\\\cline{1-5}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Event Type}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Event Code}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{Note}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{MIDI Code}}   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ {\bfseries{MXY Code}}    }\\\cline{1-5}
+\endhead
+Note Off   &{\ttfamily 0x80}   &C1   &{\ttfamily 60}   &{\ttfamily 1}    \\\cline{1-5}
+Note On   &{\ttfamily 0x90}   &D1   &{\ttfamily 62}   &{\ttfamily 2}    \\\cline{1-5}
+Control Change   &{\ttfamily 0x\+B0}   &E1   &{\ttfamily 64}   &{\ttfamily 3}    \\\cline{1-5}
+Track Name   &{\ttfamily 0x03}   &F1   &{\ttfamily 65}   &{\ttfamily 4}    \\\cline{1-5}
+Instrument Name   &{\ttfamily 0x04}   &G1   &{\ttfamily 67}   &{\ttfamily 5}    \\\cline{1-5}
+Set Tempo   &{\ttfamily 0x51}   &A1   &{\ttfamily 69}   &{\ttfamily 6}    \\\cline{1-5}
+Time Signature   &{\ttfamily 0x58}   &B1   &{\ttfamily 71}   &{\ttfamily 7}    \\\cline{1-5}
+Key Signature   &{\ttfamily 0x59}   &C2   &{\ttfamily 72}   &{\ttfamily 8}    \\\cline{1-5}
+Sys\+Ex Start   &{\ttfamily 0x\+F0}   &Track End   &{\ttfamily 0x2F}   &{\ttfamily 0x\+FF}    \\\cline{1-5}
+Sys\+Ex Restart   &{\ttfamily 0x\+F7}   &Delay   &&{\ttfamily 0x00 D1 D2}   \\\cline{1-5}
+\end{longtabu}
+
+
+The new file in .mxy format is sent via UART to the Arduino board and saved in EEPROM (function {\ttfamily song\+\_\+fetch()} on AVR). Then, the activation of playing mode is done by {\ttfamily song\+\_\+play()}.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md17}{}\doxysubsection{\texorpdfstring{Interrupt}{Interrupt}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md17}
+The original intention was to manually toggle between programming and playing mode by changing the voltage on a pin. An interrupt service routine would reset the program in either of the modes. Due to time constraints, this functionality was left out.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md18}{}\doxysubsection{\texorpdfstring{Playing the xylophone \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/src/xylophone/xyl.c}{\texttt{ xyl.\+c}}, \href{https://github.com/Th0rgrlm/Xylophone/blob/main/src/main.c}{\texttt{ main.\+c}}}}{Playing the xylophone \textsuperscript{\href{https://github.com/Th0rgrlm/Xylophone/blob/main/src/xylophone/xyl.c}{\texttt{ xyl.\+c}}, \href{https://github.com/Th0rgrlm/Xylophone/blob/main/src/main.c}{\texttt{ main.\+c}}}}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md18}
+The function responsible for making the xylophone play is straightforward. It sets the corresponding pin of the note to high\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ DELAY\_MS\ 40}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \mbox{\hyperlink{xyl_8c_ac70dfc916b83e62549b5ab9bf0d16b75}{xyl\_play\_note}}(\mbox{\hyperlink{structs_8h_a36fb5296c25f10e2efd2009ff190d27d}{notes\_e}}\ note)\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{switch}\ (note)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ C1:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{group__fryza__gpio_gabd54283301ad4e85b31c126f2fc316c7}{GPIO\_write\_high}}(\&PORTD,\ C1\_PIN);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ D1:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{group__fryza__gpio_gabd54283301ad4e85b31c126f2fc316c7}{GPIO\_write\_high}}(\&PORTD,\ D1\_PIN);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ ...}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ NONE:}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{group__fryza__gpio_gacea0f20416113eb2286b6bd730e22daa}{GPIO\_write\_low}}(\&PORTD,\ C1\_PIN);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{group__fryza__gpio_gacea0f20416113eb2286b6bd730e22daa}{GPIO\_write\_low}}(\&PORTD,\ D1\_PIN);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ ...}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+The function is called again after a note is played in the main program loop, as indicated in the following snippet. Calling {\ttfamily \doxylink{xyl_8c_ac70dfc916b83e62549b5ab9bf0d16b75}{xyl\+\_\+play\+\_\+note(notes\+\_\+e note)}} with {\ttfamily NONE} argument sets all note pins to low.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{song\_ptr++;}
+\DoxyCodeLine{\mbox{\hyperlink{xyl_8c_ac70dfc916b83e62549b5ab9bf0d16b75}{xyl\_play\_note}}(value);}
+\DoxyCodeLine{\_delay\_ms(40);}
+\DoxyCodeLine{\mbox{\hyperlink{xyl_8c_ac70dfc916b83e62549b5ab9bf0d16b75}{xyl\_play\_note}}(NONE);}
+\DoxyCodeLine{display\_note(value);}
+
+\end{DoxyCode}
+
+
+The delay of 40 milliseconds was chosen as a compromise between delay length and the force of the shooting coils. Do not confuse this delay with the delay {\itshape between notes}, which is specified in the Delay message (code from {\ttfamily main.\+c})\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{case}\ STATUS\_DELAY\_1:\ \textcolor{comment}{//\ On\ 1st\ delay\ byte}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ delay\ +=\ 256\ *\ song[song\_pos++];\ \textcolor{comment}{//\ Get\ 1st\ delay\ byte}}
+\DoxyCodeLine{\ \ \ \ new\_status\ =\ STATUS\_DELAY\_2;\ \textcolor{comment}{//\ Next\ byte\ is\ 2nd\ byte\ of\ delay}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{\textcolor{keywordflow}{case}\ STATUS\_DELAY\_2:\ \textcolor{comment}{//\ On\ 2nd\ delay\ byte}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ delay\ +=\ song[song\_pos++];\ \textcolor{comment}{//\ Get\ 2nd\ delay\ byte}}
+\DoxyCodeLine{\ \ \ \ delay\_ms(delay);\ \textcolor{comment}{//\ Play\ delay}}
+\DoxyCodeLine{\ \ \ \ delay\ =\ 0;\ \textcolor{comment}{//\ Reset\ delay}}
+\DoxyCodeLine{\ \ \ \ new\_status\ =\ STATUS\_NOTE;\ \textcolor{comment}{//\ Next\ byte\ is\ note\ specifier}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+The tempo of the song can be easily changed in the MID file header. Tempo has the identifier {\ttfamily 0x51}.\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md19}{}\doxysection{\texorpdfstring{What we learned}{What we learned}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md19}
+Delay function\textquotesingle{}s argument must be a copmile time constant. 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ delay\_ms(uint16\_t\ delay)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{while}\ (delay-\/-\/)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \_delay\_ms(1);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+Xylophone can\textquotesingle{}t play notes simultaneously. There is an audible delay of a few ms.
+
+EEPROM page size is tiny (8 bytes).\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md20}{}\doxysection{\texorpdfstring{How to use}{How to use}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md20}
+Connect xylophone to pins 3-\/10 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
+
+add info how to use parser and how to prepare and export notes\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md21}{}\doxysection{\texorpdfstring{Short video}{Short video}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md21}
+\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md22}{}\doxysection{\texorpdfstring{Tools}{Tools}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md22}
+\href{https://platformio.org/}{\texttt{ Platform\+IO}}
+
+\href{https://www.make.com/en}{\texttt{ Make}}
+
+\href{https://inkscape.org/}{\texttt{ Inkscape}}
+
+\href{https://musescore.org/}{\texttt{ Muse\+Score 4}}\hypertarget{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md23}{}\doxysection{\texorpdfstring{References}{References}}\label{md__c_1_2_users_2mgaho_2_documents_2_martin_2_school_2_v_u_t_25__semestr_2_d_e2_2project_2_xylophone_2_r_e_a_d_m_e_autotoc_md23}
+\href{https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html}{\texttt{ Standard MIDI-\/\+File Format Spec. 1.\+1, updated}}
+
+Digital Electronics 2 presentation by Tomas Fryza 

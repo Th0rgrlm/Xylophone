@@ -1,3 +1,14 @@
+/**
+ * @file main.c
+ * @author Martin Garncarz (246815@vutbr.cz)
+ * @brief MIDI file parser
+ * @version 0.1
+ * @date 2024-11-26
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -80,30 +91,129 @@ typedef struct track_info
     uint16_t ticks_per_quarter;
 } track_info_t;
 
+/**
+ * @brief Function for MIDI header verification
+ * 
+ * @param file File to verify the header of
+ * @return true if file is a valid MIDI file
+ * @return false if file is not a MIDI file
+ */
 bool verify_header(FILE* file);
 
+/**
+ * @brief Get the start of the tracks
+ * 
+ * @param midi_file File to read the pointers from
+ * @param pointers Structure to save the pointers into (start track)
+ * @param n_ptrs Number of tracks to read
+ * @return int32_t Error code
+ */
 int32_t get_track_pointers(FILE* midi_file, track_info_t* pointers, uint8_t n_ptrs);
 
+/**
+ * @brief Reads and parses single track
+ * 
+ * @param midi_file File to read the track from
+ * @param track Track to be read and parsed, contains saved information about the track
+ * @param out_file Output file to save the parsed track
+ */
 void read_track(FILE* midi_file, track_info_t* track, FILE* out_file);
 
+/**
+ * @brief Reads and parses single command from a current track position
+ * 
+ * @param midi_file File to read the command from
+ * @param track Track structure to read the current position from
+ * @param out_file Output file to save the parsed command
+ * @return int16_t Error code
+ */
 int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file);
 
+/**
+ * @brief Creates a delay in a track between notes
+ * 
+ * @param delta_time Length of the delay
+ * @param track Track structure containing tempo information
+ * @param out_file Output file to save the delay to
+ */
 void create_delay(int64_t delta_time, track_info_t* track, FILE* out_file);
 
+/**
+ * @brief Reads delta time as a variable length value
+ * 
+ * @param midi_file File to read the delta time from
+ * @param track Track to read from
+ * @return int64_t Output delta time
+ */
 int64_t read_delta_time(FILE* midi_file, track_info_t* track);
 
+/**
+ * @brief Reads variable length value
+ * 
+ * @param file File to read the value from
+ * @param track Track to read from
+ * @return int64_t Output variable length value
+ */
 int64_t read_var_len(FILE* file, track_info_t* track);
 
+/**
+ * @brief Reads single byte from the MIDI file
+ * 
+ * @param file MIDI file to read the byte from
+ * @param track Track to read from
+ * @return int16_t Output byte (negative values mean error)
+ */
 int16_t read_byte(FILE* file, track_info_t* track);
 
+/**
+ * @brief Parses a command saved in track structure
+ * 
+ * @param file MIDI file to read additional bytes from if needed
+ * @param track Track to read from
+ * @param data_byte_1 1st argument of the command
+ * @param out_file output file to save the read command output to
+ * @return int16_t Error code
+ */
 int16_t parse_command(FILE* file, track_info_t* track, uint8_t data_byte_1, FILE* out_file);
 
+/**
+ * @brief Parses Meta event
+ * 
+ * @param file MIDI file to read additional bytes from if needed
+ * @param track Track to read from
+ * @param meta_command Meta command
+ * @param out_file Output file to save the parsed meta event to
+ * @return int16_t Error code
+ */
 int16_t parse_meta_event(FILE* file, track_info_t* track, uint8_t meta_command, FILE* out_file);
 
+/**
+ * @brief Parses MIDI event
+ * 
+ * @param file MIDI file to read additional bytes from if needed
+ * @param track Track to read from
+ * @param data_byte_1 1st byte of the MIDI event
+ * @param out_file Output file to save the parsed MIDI event to
+ * @return int16_t Error code
+ */
 int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, FILE* out_file);
 
+/**
+ * @brief Writes a note to the output file
+ * 
+ * @param note Note to write
+ * @param velocity Velocity of the note (0 means off, any other on)
+ * @param out_file Output file to write the note to
+ */
 void create_note(notes_e note, uint8_t velocity, FILE* out_file);
 
+/**
+ * @brief Converts hex value in big endian to uint64_t
+ * 
+ * @param hexstr hexadecimal string in big endian
+ * @param hexstr_len length of the hexadecimal string
+ * @return uint64_t Converted uint64_t value
+ */
 uint64_t hex2uint(const char* hexstr, uint8_t hexstr_len);
 
 
@@ -122,10 +232,6 @@ int main(int argc, uint8_t* argv[])
     uint8_t COM = strtol(argv[2], NULL, 10);
 
     printf("Loading midi file...\n");
-    // char pwd[1024];
-    // getcwd(pwd, 1024);
-    // printf("cwd: %s\n", pwd);
-    // FILE* f = fopen("C:\\Users\\mgaho\\Documents\\Martin\\School\\VUT\\5_semestr\\DE2\\project\\Xylophone\\src\\pc\\test.mid", "rb");
     FILE* f = fopen(path, "rb");
     if (f == NULL)
     {

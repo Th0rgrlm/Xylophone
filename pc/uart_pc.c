@@ -7,9 +7,37 @@
 
 HANDLE h_serial;
 
+/**
+ * @brief Get the length of the file
+ * 
+ * @param file File to get the length of
+ * @return uint32_t Length of the file
+ */
 uint32_t get_file_len(FILE* file);
+
+/**
+ * @brief Initialize UART communication
+ * 
+ * @param COM COM port to initialize the communication on
+ * @return int16_t Error code
+ */
 int16_t uart_init(uint8_t COM);
+
+/**
+ * @brief Closes the UART communication and frees the COM port
+ * 
+ * @return int16_t Error code
+ */
 int16_t uart_close(void);
+
+/**
+ * @brief Sends file via UART to the opened COM port
+ * 
+ * @param file File to send
+ * @param file_len Length of the file to send
+ * @param chunk Length of the chunk to send at once
+ * @return int16_t Error code
+ */
 int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk);
 
 

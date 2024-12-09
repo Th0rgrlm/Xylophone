@@ -1,9 +1,11 @@
 /**
  * @file xyl.h
  * @author MGA (246815@vutbr.cz)
- * @brief 
  * @version 0.1
  * @date 2024-11-13
+ * @defgroup xylophone_xyl Xylophone Control Library <xyl.h>
+ * @code #include <xyl.h> @endcode
+ * @brief Xylophone library.
  * 
  * @copyright Copyright (c) 2024
  * 

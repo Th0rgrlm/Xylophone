@@ -129,7 +129,7 @@ uint8_t twi_test_address(uint8_t addr);
 void twi_readfrom_mem_into(uint8_t addr, uint8_t memaddr, volatile uint8_t *buf, uint8_t nbytes);
 
 /**
- * @brief  Write data to the EEPROM.
+ * @brief  Read multiple bytes of data via TWI
  *
  * @param device_address address of the device
  * @param data data to write
@@ -140,7 +140,7 @@ void twi_readfrom_mem_into(uint8_t addr, uint8_t memaddr, volatile uint8_t *buf,
 int8_t twi_read_bites(uint8_t device_address, uint8_t *data, uint16_t data_size, uint8_t hold);
 
 /**
- * @brief Load data from the EEPROM.
+ * @brief Write multiple bytes of data via TWI
  * 
  * @param device_address address of the device
  * @param data data to write

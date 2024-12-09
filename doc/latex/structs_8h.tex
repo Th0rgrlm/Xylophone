@@ -1,0 +1,59 @@
+\doxysection{C\+:/\+Users/mgaho/\+Documents/\+Martin/\+School/\+VUT/5\+\_\+semestr/\+DE2/project/\+Xylophone/include/structs.h File Reference}
+\hypertarget{structs_8h}{}\label{structs_8h}\index{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/include/structs.h@{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/include/structs.h}}
+
+
+Basic structure definitions.  
+
+
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structs_8h_a36fb5296c25f10e2efd2009ff190d27d}\label{structs_8h_a36fb5296c25f10e2efd2009ff190d27d} 
+typedef enum \mbox{\hyperlink{structs_8h_adfbdbc36baee852981842d731e0ccf6d}{notes}} {\bfseries notes\+\_\+e}
+\begin{DoxyCompactList}\small\item\em Enum for all notes. \end{DoxyCompactList}\item 
+\Hypertarget{structs_8h_ad28b0c4e69f42182abbedc493b2c445d}\label{structs_8h_ad28b0c4e69f42182abbedc493b2c445d} 
+typedef enum \mbox{\hyperlink{structs_8h_a5fdf137b0085cace9ff8e5c9ab0f9f9f}{note\+\_\+status}} {\bfseries note\+\_\+status\+\_\+e}
+\begin{DoxyCompactList}\small\item\em Enum for status of byte reading/parsing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structs_8h_adfbdbc36baee852981842d731e0ccf6d}\label{structs_8h_adfbdbc36baee852981842d731e0ccf6d} 
+enum \mbox{\hyperlink{structs_8h_adfbdbc36baee852981842d731e0ccf6d}{notes}} \{ \newline
+{\bfseries NONE} = 0
+, {\bfseries C1} = 1
+, {\bfseries D1} = 2
+, {\bfseries E1} = 3
+, \newline
+{\bfseries F1} = 4
+, {\bfseries G1} = 5
+, {\bfseries A1} = 6
+, {\bfseries B1} = 7
+, \newline
+{\bfseries C2} = 8
+, {\bfseries END} = 0x\+FF
+ \}
+\begin{DoxyCompactList}\small\item\em Enum for all notes. \end{DoxyCompactList}\item 
+\Hypertarget{structs_8h_a5fdf137b0085cace9ff8e5c9ab0f9f9f}\label{structs_8h_a5fdf137b0085cace9ff8e5c9ab0f9f9f} 
+enum \mbox{\hyperlink{structs_8h_a5fdf137b0085cace9ff8e5c9ab0f9f9f}{note\+\_\+status}} \{ {\bfseries STATUS\+\_\+\+DELAY\+\_\+1} = 0
+, {\bfseries STATUS\+\_\+\+DELAY\+\_\+2} = 1
+, {\bfseries STATUS\+\_\+\+NOTE} = 2
+, {\bfseries STATUS\+\_\+\+END} = 0x\+FF
+ \}
+\begin{DoxyCompactList}\small\item\em Enum for status of byte reading/parsing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Basic structure definitions. 
+
+\begin{DoxyAuthor}{Author}
+Martin Garncarz (\href{mailto:246815@vutbr.cz}{\texttt{ 246815@vutbr.\+cz}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2024-\/12-\/04
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2024 
+\end{DoxyCopyright}

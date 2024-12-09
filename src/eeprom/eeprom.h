@@ -1,9 +1,11 @@
 /**
  * @file eeprom.h
  * @author Matúš Citor (246797@vutbr.cz)
- * @brief 
  * @version 0.1
  * @date 2024-11-20
+ * @defgroup xylophone_eeprom EEPROM Library <eeprom.h>
+ * @code #include <eeprom.h> @endcode
+ * @brief EEPROM library.
  * 
  * @copyright Copyright (c) 2024
  * 

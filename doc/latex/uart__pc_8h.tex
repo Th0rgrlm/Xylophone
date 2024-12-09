@@ -1,0 +1,55 @@
+\doxysection{C\+:/\+Users/mgaho/\+Documents/\+Martin/\+School/\+VUT/5\+\_\+semestr/\+DE2/project/\+Xylophone/pc/uart\+\_\+pc.h File Reference}
+\hypertarget{uart__pc_8h}{}\label{uart__pc_8h}\index{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/pc/uart\_pc.h@{C:/Users/mgaho/Documents/Martin/School/VUT/5\_semestr/DE2/project/Xylophone/pc/uart\_pc.h}}
+
+
+PC COM port communication.  
+
+
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int16\+\_\+t \mbox{\hyperlink{uart__pc_8h_a50a984ec430081f11dd7cf08b161a58f}{uart\+\_\+send}} (FILE \texorpdfstring{$\ast$}{*}parsed, uint8\+\_\+t COM)
+\begin{DoxyCompactList}\small\item\em Sends parsed .mxy file to COM port. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+PC COM port communication. 
+
+\begin{DoxyAuthor}{Author}
+Martin Garncarz (\href{mailto:246815@vutbr.cz}{\texttt{ 246815@vutbr.\+cz}}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2024-\/11-\/26
+\end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+Copyright (c) 2024 
+\end{DoxyCopyright}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{uart__pc_8h_a50a984ec430081f11dd7cf08b161a58f}\index{uart\_pc.h@{uart\_pc.h}!uart\_send@{uart\_send}}
+\index{uart\_send@{uart\_send}!uart\_pc.h@{uart\_pc.h}}
+\doxysubsubsection{\texorpdfstring{uart\_send()}{uart\_send()}}
+{\footnotesize\ttfamily \label{uart__pc_8h_a50a984ec430081f11dd7cf08b161a58f} 
+int16\+\_\+t uart\+\_\+send (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{parsed}{, }\item[{uint8\+\_\+t}]{COM}{}\end{DoxyParamCaption})}
+
+
+
+Sends parsed .mxy file to COM port. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em parsed} & pointer to the parsed MXY file \\
+\hline
+{\em COM} & COM port to communicate on \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int16\+\_\+t Error code 
+\end{DoxyReturn}
