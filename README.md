@@ -132,7 +132,7 @@ The PC app is a console app and requires two additional arguments to be run. The
 
 The new file in .mxy format is sent via UART to the Arduino board and saved in EEPROM (function `song_fetch()` on AVR). Then, the activation of playing mode is done by `song_play()`.
 
-Example HEX code in the simplified MXY format:
+Example parsed HEX code in the simplified MXY format:
 
 ```
 00 01 36 ; Delay:   0x0136
