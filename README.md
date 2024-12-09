@@ -29,7 +29,7 @@ The project involves programming an Arduino microcontroller. The microcontroller
 
 The MID file is first processed in a program on PC, written in C. The [MIDI format](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html) is an extensive specification and only a few of the events (note on, key, note length, etc) are relevant to our use case. This means that much of the MID file can be erased. For the practicality of debugging and also beacause of the limited resources of the microcontroller, pre-processing is done on PC.
 
-The data saved in a file with extension `.MXY` is sent to the microcontroller via USB. For PC - Arduino communication, UART is used. The blocks of data are stored in the board's memory so they can be sent via I2C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. In our implementation, the playing mode immediately follows the upload process. I2C is used to load the blocks of data from EEPROM (and memory) and signals are sent to the xylophone pins. 
+The data saved in a file with custom extension `.MXY` is sent to the microcontroller via USB. For PC - Arduino communication, UART is used. The blocks of data are stored in the board's RAM so they can be sent via I<sup>2</sup>C to the EEPROM. Once the song is saved on EEPROM, no communication between the PC and the board is necessary. In our implementation, the playing mode immediately follows the upload process. I<sup>2</sup>C is used to load the blocks of data from EEPROM (and memory) and signals are sent to the xylophone pins. 
 
 ## Hardware description
 #### Xylophone
@@ -58,10 +58,10 @@ This is the structure of the project's source files including the libraries and 
     ├── include
     │     ├── pins.h        # Arduino pins
     │     ├── structs.h     # Enum of note, pause and end events
-    │     └── ...
+    │     ├── constants.h   # Buffer size constants
+    │     └── error_codes.h # Error codes definitions
     ├── lib
     │     ├── gpio            # GPIO library (c) Tomas Fryza
-    │     ├── midi            
     │     ├── oled            # OLED display library (c) Skie-Systems
     │     ├── twi             # I2C/TWI library (c) Tomas Fryza
     │     └── uart            # UART library with r/t circular buffers (c) Peter Fleury
@@ -70,7 +70,10 @@ This is the structure of the project's source files including the libraries and 
     │     ├── display         # functions to display data on OLED
     │     ├── eeprom          # EEPROM read/write functions
     │     └── xylophone       # play note functions
-    ├── pc                    # PC program for MID pre-processing
+    ├── pc                    # PC utility for MID pre-processing
+    |     ├── main.c          # MID convertor to MXY
+    |     ├── uart_pc.h       # PC UART communication with AVR
+    │     └── error_codes.h   # Error codes definitions for PC utility
     └── platformio.ini        # PlatformIO framework config
 
 ### Pins <sup>[pins.h](https://github.com/Th0rgrlm/Xylophone/blob/main/include/pins.h)</sup>
@@ -91,7 +94,7 @@ In total, 8 pins are used for the notes of the xylophone. One other pin is reser
 
 ### MIDI parser <sup>[pc/main.c](https://github.com/Th0rgrlm/Xylophone/blob/main/pc/main.c)</sup>
 
-The PC sub-program reads and parses a MID/MIDI file to extract select MIDI events listed in a table below. Once the file is opened, the MIDI file’s header is verified in `verify_header(FILE* file)`. An output file with the extension `.MXY` is created and the parsed contents are written there. The function `read_track` invokes reading of the individual commands:
+The PC sub-program reads and parses a MID/MIDI file to extract select MIDI events listed in a table below. Once the file is opened, the MIDI file’s header is verified in `verify_header(FILE* file)`. An output file with the extension `.mxy` is created and the parsed contents are written there. The function `read_track` invokes reading of the individual commands:
 
 ```c
 void read_track(FILE* midi_file, track_info_t* track, FILE* out_file)
@@ -110,24 +113,24 @@ void read_track(FILE* midi_file, track_info_t* track, FILE* out_file)
 int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
 ...
 ```
+The PC app is a console app and requires two additional arguments to be run. The first one is exact path of the file to be converted, the second one is COM port number the converted should be sent to. After that, the program will confirm the supplied file is an actual .mid file and converts it to a .mxy file. After that, the UART communication between PC and Arduino will begin. The file is sent in chunks of 256 bytes (because of RX receive buffer of the AVR). After each chunk is sent, Arduino checks for track end and writes the chunk to EEPROM. If no track end was found, it requests another chunk by sending `'C'`, otherwise it ends the communication by sending `'A'`.
 
 ### MIDI events and their codes
 
-| **Event Type**      | **Event Code**  | **Note**   | **MIDI Code** |
-|---------------------|-----------------|------------|---------------|
-| Note Off            | `0x80`          | C1         | `60`          |
-| Note On             | `0x90`          | D1         | `62`          |
-| Control Change      | `0xB0`          | E1         | `64`          |
-| Track Name          | `0x03`          | F1         | `65`          |
-| Instrument Name     | `0x04`          | G1         | `67`          |
-| Track End           | `0x2F`          | A1         | `69`          |
-| Set Tempo           | `0x51`          | B1         | `71`          |
-| Time Signature      | `0x58`          | C2         | `72`          |
-| Key Signature       | `0x59`          |            |               |
-| SysEx Start         | `0xF0`          |            |               |
-| SysEx Restart       | `0xF7`          |            |               |
+| **Event Type**      | **Event Code**  | **Note**   | **MIDI Code** | **MXY Code**  | 
+|---------------------|-----------------|------------|---------------|---------------|
+| Note Off            | `0x80`          | C1         | `60`          | `1`           |
+| Note On             | `0x90`          | D1         | `62`          | `2`           |
+| Control Change      | `0xB0`          | E1         | `64`          | `3`           |
+| Track Name          | `0x03`          | F1         | `65`          | `4`           |
+| Instrument Name     | `0x04`          | G1         | `67`          | `5`           |
+| Set Tempo           | `0x51`          | A1         | `69`          | `6`           |
+| Time Signature      | `0x58`          | B1         | `71`          | `7`           | 
+| Key Signature       | `0x59`          | C2         | `72`          | `8`           |
+| SysEx Start         | `0xF0`          | Track End  | `0x2F`        | `0xFF`        |
+| SysEx Restart       | `0xF7`          | Delay      |               | `0x00 D1 D2`  |
 
-The new file is sent via UART to the Arduino board and saved in EEPROM. Then, the activation of playing mode follows: `song_fetch();` is followed by `song_play();`.
+The new file in .mxy format is sent via UART to the Arduino board and saved in EEPROM (function `song_fetch()` on AVR). Then, the activation of playing mode is done by `song_play()`.
 
 ### Interrupt
 
@@ -192,7 +195,7 @@ The tempo of the song can be easily changed in the MID file header. Tempo has th
 
 ## What we learned
 
-Delay function's argument must be a runtime constant.
+Delay function's argument must be a copmile time constant.
 ```c
 void delay_ms(uint16_t delay)
 {
@@ -205,12 +208,13 @@ void delay_ms(uint16_t delay)
 
 Xylophone can't play notes simultaneously. There is an audible delay of a few ms.
 
-EEPROM page size is tiny
+EEPROM page size is tiny (8 bytes).
 
 ## How to use
 Connect xylophone to pins 3-10 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
 add info how to use parser and how to prepare and export notes
+
 
 ## Short video
 
@@ -223,6 +227,8 @@ add info how to use parser and how to prepare and export notes
 [Make](https://www.make.com/en)
 
 [Inkscape](https://inkscape.org/)
+
+[MuseScore 4](https://musescore.org/)
 
 ## References
 
