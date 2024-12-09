@@ -169,22 +169,22 @@ Example parsed HEX code in the simplified MXY format:
 08       ; Note:    C2
 00 0B A2 ; Delay:   0x0BA2
 00 00 03 ; Delay:   0x0003
-07       ; Note:    C1
+07       ; Note:    B1
 00 02 E6 ; Delay:   0x02E6
 00 00 03 ; Delay:   0x0003
-06       ; Note:    C1
+06       ; Note:    A1
 00 02 E6 ; Delay:   0x02E6
 00 00 03 ; Delay:   0x0003
-05       ; Note:    C1
+05       ; Note:    G1
 00 05 CF ; Delay:   0x05CF
 00 00 03 ; Delay:   0x0003
-04       ; Note:    C1
+04       ; Note:    F1
 00 0B A2 ; Delay:   0x0BA2
 00 0B A8 ; Delay:   0x0BA8
-03       ; Note:    C1
+03       ; Note:    E1
 00 05 CF ; Delay:   0x05CF
 00 00 03 ; Delay:   0x0003
-02       ; Note:    C1
+02       ; Note:    D1
 00 02 E6 ; Delay:   0x02E6
 00 00 03 ; Delay:   0x0003
 01       ; Note:    C1
