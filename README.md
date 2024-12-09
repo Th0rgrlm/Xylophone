@@ -135,62 +135,62 @@ The new file in .mxy format is sent via UART to the Arduino board and saved in E
 Example parsed HEX code in the simplified MXY format:
 
 ```
-00 01 36 ; Delay:   0x0136
-00 00 12 ; Delay:   0x0012
-00 01 8A ; Delay:   0x018A
-00 01 39 ; Delay:   0x0139
-00 01 36 ; Delay:   0x0136
-00 00 1F ; Delay:   0x001F
-00 01 20 ; Delay:   0x0120
-01       ; Note:    C1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-02       ; Note:    D1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-03       ; Note:    E1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-04       ; Note:    F1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-05       ; Note:    G1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-06       ; Note:    A1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-07       ; Note:    B1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-08       ; Note:    C2
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-08       ; Note:    C2
-00 0B A2 ; Delay:   0x0BA2
-00 00 03 ; Delay:   0x0003
-07       ; Note:    B1
-00 02 E6 ; Delay:   0x02E6
-00 00 03 ; Delay:   0x0003
-06       ; Note:    A1
-00 02 E6 ; Delay:   0x02E6
-00 00 03 ; Delay:   0x0003
-05       ; Note:    G1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-04       ; Note:    F1
-00 0B A2 ; Delay:   0x0BA2
-00 0B A8 ; Delay:   0x0BA8
-03       ; Note:    E1
-00 05 CF ; Delay:   0x05CF
-00 00 03 ; Delay:   0x0003
-02       ; Note:    D1
-00 02 E6 ; Delay:   0x02E6
-00 00 03 ; Delay:   0x0003
-01       ; Note:    C1
-00 08 B8 ; Delay:   0x08B8
-00 00 03 ; Delay:   0x0003
-FF       ; Track end
+00 00 68    ; Delay: 104 ms
+00 00 06    ; Delay: 6 ms
+00 00 84    ; Delay: 132 ms
+00 00 69    ; Delay: 105 ms
+00 00 68    ; Delay: 104 ms
+00 00 0A    ; Delay: 10 ms
+00 00 60    ; Delay: 96 ms
+01          ; Note: C1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+02          ; Note: D1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+03          ; Note: E1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+04          ; Note: F1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+05          ; Note: G1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+06          ; Note: A1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+07          ; Note: B1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+08          ; Note: C2
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+08          ; Note: C2
+00 03 E6    ; Delay: 998 ms
+00 00 01    ; Delay: 1 ms
+07          ; Note: B1
+00 00 F8    ; Delay: 248 ms
+00 00 01    ; Delay: 1 ms
+06          ; Note: A1
+00 00 F8    ; Delay: 248 ms
+00 00 01    ; Delay: 1 ms
+05          ; Note: G1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+04          ; Note: F1
+00 03 E6    ; Delay: 998 ms
+00 03 E9    ; Delay: 1 ms
+03          ; Note: E1
+00 01 F2    ; Delay: 498 ms
+00 00 01    ; Delay: 1 ms
+02          ; Note: D1
+00 00 F8    ; Delay: 248 ms
+00 00 01    ; Delay: 1 ms
+01          ; Note: C1
+00 02 EC    ; Delay: 748 ms
+00 00 01    ; Delay: 1 ms
+FF          ; Track End 
 ```
 
 ### Interrupt
