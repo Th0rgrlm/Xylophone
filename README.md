@@ -276,6 +276,9 @@ Parsing: set the file path `FILE* f = fopen("C:\\...", "rb");` to point to your 
 
 Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
+## Wiring diagram
+![wiring diagram](image.png)
+
 ## Short video
 
 
