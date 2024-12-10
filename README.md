@@ -272,10 +272,9 @@ Xylophone can't play notes simultaneously. There is an audible delay of a few ms
 EEPROM page size is tiny (8 bytes).
 
 ## How to use
-Connect xylophone to pins 3-10 and to ground, after this, the logical zero will be sent to pin A0 and by that the programming code will be initialized. Next the data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
+Parsing: set the file path `FILE* f = fopen("C:\\...", "rb");` to point to your MID file. Use `make` to build the project. Execute the code and the MXY file will be created.
 
-add info how to use parser and how to prepare and export notes
-
+Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
 ## Short video
 
