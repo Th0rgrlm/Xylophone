@@ -252,7 +252,7 @@ case STATUS_DELAY_2: // On 2nd delay byte
 }
 ```
 
-The tempo of the song can be easily changed in the MID file header. Tempo has the identifier `0x51`.
+The tempo of the song can be easily changed while exporting the .MID file.
 
 ## What we learned
 
