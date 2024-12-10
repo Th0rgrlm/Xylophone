@@ -280,7 +280,7 @@ Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the E
 ![wiring diagram](image.png)
 
 ## Short video
-
+https://youtu.be/iVaCpZAgTJk?si=zSlmvccuRARTQfLz
 
 
 ## Tools
