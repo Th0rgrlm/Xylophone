@@ -18,7 +18,7 @@ Build an electronic xylophone instrument that can be played using an Arduino mic
 
 ## Team
     Martin G:
-    Matúš C:
+    Matúš C: 
     Jonáš H:
     Max G:
 
@@ -56,10 +56,10 @@ This is the structure of the project's source files including the libraries and 
 
     .
     ├── include
-    │     ├── pins.h        # Arduino pins
-    │     ├── structs.h     # Enum of note, pause and end events
-    │     ├── constants.h   # Buffer size constants
-    │     └── error_codes.h # Error codes definitions
+    │     ├── pins.h          # Arduino pins
+    │     ├── structs.h       # Enum of note, pause and end events
+    │     ├── constants.h     # Buffer size constants
+    │     └── error_codes.h   # Error codes definitions
     ├── lib
     │     ├── gpio            # GPIO library (c) Tomas Fryza
     │     ├── oled            # OLED display library (c) Skie-Systems
@@ -272,7 +272,7 @@ Xylophone can't play notes simultaneously. There is an audible delay of a few ms
 EEPROM page size is tiny (8 bytes).
 
 ## How to use
-Parsing: set the file path `FILE* f = fopen("C:\\...", "rb");` to point to your MID file. Use `make` to build the project. Execute the code and the MXY file will be created.
+Use `make` to build the pc project. Execute the program with arguments of path to the .MID file and COM port to upload to and the MXY file will be created and sent.
 
 Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the EEPROM memory via the PC app. After a successful upload, the program for playing the xylophone will begin. The display will show the currently played note and you will be able to listen to its beautiful sound.
 
