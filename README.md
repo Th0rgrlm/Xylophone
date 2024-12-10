@@ -256,7 +256,7 @@ The tempo of the song can be easily changed in the MID file header. Tempo has th
 
 ## What we learned
 
-Delay function's argument must be a copmile time constant.
+Delay function's argument must be a compile time constant.
 ```c
 void delay_ms(uint16_t delay)
 {
