@@ -68,36 +68,6 @@ int32_t song_play(void);
  */
 int32_t song_load(void);
 
-/**
- * @brief Set the programming mode or resets the device
- * 
- * @param reset_on_change Whether board should reset on pin change
- */
-void set_mode(uint8_t reset_on_change);
-
-static uint8_t mode = 0; /** @brief Current Arduino mode */
-
-// uint8_t song[] = {
-// 	C1,
-// 	NONE, 0x00, 0x80,
-// 	D1,
-// 	NONE, 0x00, 0x80,
-// 	E1,
-// 	NONE, 0x00, 0x80,
-// 	F1,
-// 	NONE, 0x00, 0x80,
-// 	G1,
-// 	NONE, 0x00, 0x80,
-// 	A1,
-// 	NONE, 0x00, 0x80,
-// 	B1,
-// 	NONE, 0x00, 0x80,
-// 	C2,
-// 	NONE, 0x01, 0x00,
-// 	END
-// };
-
-
 uint8_t song[SONG_SIZE]; /** @brief Currently playing song */
 
 int main(void)
@@ -113,47 +83,16 @@ void init(void)
 {
 	uart_init(UART_BAUD_SELECT(115200, F_CPU)); // Enable UART
 	sei(); // Enable global interrupts
-	// pin_init(); // Initialize programming mode pin
-	// GPIO_mode_input_pullup(&PORTD, GPIO_PROGRAMM_MODE); // Set programming pin to pullup (default high)
+	
 	xyl_init(); // Initialize xylophone pins
 	twi_init(); // Initialize TWI
-	// PCMSK1 |= (0b1 << PCINT8); // Enable pin change interrupt
-	// PCICR |= (0b1 << PCIE1); // Enable block pin change interrupt
 	display_init(); // Initialize display
-	// if (mode) uart_putc('X');
-	// else uart_putc('Y');
-	// mode = GPIO_read(&PORTD, GPIO_PROGRAMM_MODE) ? 0 : 1; // Set initial mode
-	// if (mode) uart_putc('X');
-	// else uart_putc('Y');
 	return;
 }
 
 void loop(void)
 {
 	song_fetch(); // Fetch song from UART
-	
-	// static uint8_t* song_ptr = song;
-	// if (*song_ptr != END)
-	// {
-	// 	uint8_t value = *song_ptr;
-	// 	if (value == NONE)
-	// 	{
-	// 		uint16_t delay = *(song_ptr + 1) * 256;
-	// 		delay += *(song_ptr + 2);
-	// 		delay *= 4;
-	// 		song_ptr += 3;
-	// 		delay_ms(delay);
-	// 	}
-	// 	else
-	// 	{
-	// 		song_ptr++;
-	// 		xyl_play_note(value);
-	// 		_delay_ms(40);
-	// 		xyl_play_note(NONE);
-	// 		display_note(value);
-	// 	}
-	// }
-	
 	song_play(); // Play song
 	return;
 }
@@ -282,12 +221,6 @@ void song_fetch(void)
 		{
 			uart_putc('A'); // End transmission
 			return;
-			while (1)
-			{
-				printf("Abort");
-				delay_ms(1000);
-			}
-			uart_puts("Mode 1\n");	
 		}
 		else uart_putc('C'); // Ask for another chunk
 	}
@@ -300,37 +233,4 @@ void delay_ms(uint16_t delay)
 	{
 		_delay_ms(1);
 	}
-}
-
-void pin_init(void)
-{
-	GPIO_mode_input_pullup(&PORTD, GPIO_PROGRAMM_MODE); // Set programming pin to pullup (default high)
-	return;
-}	
-
-void set_mode(uint8_t reset_on_change)
-{
-	mode = !GPIO_read(&PORTD, GPIO_PROGRAMM_MODE);
-	if (mode == 0)
-	{
-		mode = 1;
-		uart_puts("Changed to mode 1\n");
-	}
-	else if (reset_on_change)
-	{
-		mode = 0; // Should be unnecessary
-		wdt_enable(0); // Enable watchdog
-		while (1); // Reset device
-	}
-}
-
-
-/**
- * @brief Interrupt Service Routine for changing the mode on pin change
- * 
- */
-ISR(INT0_vect)
-{
-	uart_puts("ISR");
-	set_mode(1);
 }

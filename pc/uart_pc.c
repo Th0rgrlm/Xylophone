@@ -45,11 +45,15 @@ int16_t uart_send_file(FILE* file, uint64_t file_len, uint16_t chunk);
 int16_t uart_send(FILE* parsed, uint8_t COM)
 {
     int16_t result;
-    if ((result = uart_init(COM)) != SUCCESS) return result;
+    if ((result = uart_init(COM)) != SUCCESS) return result; // Init UART
     uint32_t file_len = get_file_len(parsed);
 
     
-    if ((result = uart_send_file(parsed, file_len, UART_CHUNK_SIZE)) != SUCCESS) return result;
+    if ((result = uart_send_file(parsed, file_len, UART_CHUNK_SIZE)) != SUCCESS) // Send .mxy file
+    {
+        uart_close();
+        return result;
+    }
 
     uart_close();
 }
