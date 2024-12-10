@@ -222,18 +222,17 @@ int main(int argc, uint8_t* argv[])
     ///////////////////////
     // Convert MIDI file //
     ///////////////////////
-    // if (argc != 3)
-    // {
-    //     fprintf(stderr, "Insufficient arguments: %i, expected 2", argc - 1);
-    //     return ERROR_ARGS;
-    // }
-    // uint8_t* path = argv[1];
-    // uint8_t COM = strtol(argv[2], NULL, 10);
-    uint8_t COM = 0;
+    if (argc != 3)
+    {
+        fprintf(stderr, "Insufficient arguments: %i, expected 2", argc - 1);
+        return ERROR_ARGS;
+    }
+    uint8_t* path = argv[1];
+    uint8_t COM = strtol(argv[2], NULL, 10);
+    // uint8_t COM = 0;
 
     printf("Loading midi file...\n");
-    // FILE* f = fopen(path, "rb");
-    FILE* f = fopen("C:\\Users\\mgaho\\Documents\\Martin\\School\\VUT\\5_semestr\\DE2\\project\\Xylophone\\pc\\test.mid", "rb");
+    FILE* f = fopen(path, "rb");
     if (f == NULL)
     {
         fprintf(stderr, "Failed to load midi file: %i.\n", errno);
@@ -269,6 +268,9 @@ int main(int argc, uint8_t* argv[])
 
 
     fclose(f); // Close MIDI file
+    fclose(out_file); // Save output file
+
+    out_file = fopen(out_file_path, "rb");
 
 
 
