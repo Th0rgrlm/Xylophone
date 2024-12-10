@@ -286,8 +286,6 @@ Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the E
 
 [Make](https://www.make.com/en)
 
-[Inkscape](https://inkscape.org/)
-
 [MuseScore 4](https://musescore.org/) - sheet music editor with MID export
 
 [pianotify](https://pianotify.com) - online MID player
@@ -299,3 +297,5 @@ Connect xylophone to pins 3-10 and to ground. The data will be uploaded to the E
 [Standard MIDI-File Format Spec. 1.1, updated](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html)
 
 Digital Electronics 2 presentation by Tomas Fryza
+
+[15+ Easy Songs for Xylophone](https://www.carvedculture.com/blogs/articles/easy-songs-for-xylophone)
