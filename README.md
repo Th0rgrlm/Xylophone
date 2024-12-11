@@ -1,5 +1,8 @@
 # DE2 project: Electronically controlled xylophone
 
+![image](https://github.com/user-attachments/assets/a2d45d72-5cbb-4f31-be4d-f0a319dd8279)
+
+
 ## Table of Contents
 - [Original assignment](#original-assignment)
 - [Team](#team)
