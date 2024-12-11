@@ -120,7 +120,7 @@ int32_t song_play(void)
 					}
 					else if (value == END) // On song end
 					{
-						new_status = END; // End of the song
+						new_status = STATUS_END; // End of the song
 						break;
 					}
 					else if (value <= C2 && value >= C1) // On note specifier
