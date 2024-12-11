@@ -70,6 +70,8 @@ int32_t song_load(void);
 
 uint8_t song[SONG_SIZE]; /** @brief Currently playing song */
 
+static uint32_t pos = 0; // Position of the song in EEPROM to load from
+
 int main(void)
 {
 	init();
@@ -92,6 +94,7 @@ void init(void)
 
 void loop(void)
 {
+	pos = 0; // Reset pos pointer
 	song_fetch(); // Fetch song from UART
 	song_play(); // Play song
 	return;
@@ -145,6 +148,7 @@ int32_t song_play(void)
 				case STATUS_DELAY_2: // On 2nd delay byte
 				{
 					delay += song[song_pos++]; // Get 2nd delay byte
+					if (delay > 40) delay -= 40; // Ignore 40 ms delay if possible
 					delay_ms(delay); // Play delay
 					delay = 0; // Reset delay
 					new_status = STATUS_NOTE; // Next byte is note specifier
@@ -172,7 +176,6 @@ void play_note(notes_e note)
 
 int32_t song_load(void)
 {
-	static uint32_t pos = 0; // Position of the song in EEPROM to load from
 	int32_t result = eeprom_read(pos, song, SONG_SIZE); // Load SONG_SIZE bytes of song
 	pos += SONG_SIZE; // Increment pos pointer
 	return result; // Return reading result

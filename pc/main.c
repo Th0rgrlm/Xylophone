@@ -203,8 +203,9 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
  * @param note Note to write
  * @param velocity Velocity of the note (0 means off, any other on)
  * @param out_file Output file to write the note to
+ * @param track Track for time conversion
  */
-void create_note(notes_e note, uint8_t velocity, FILE* out_file);
+void create_note(notes_e note, uint8_t velocity, FILE* out_file, track_info_t* track);
 
 /**
  * @brief Converts hex value in big endian to uint64_t
@@ -214,6 +215,9 @@ void create_note(notes_e note, uint8_t velocity, FILE* out_file);
  * @return uint64_t Converted uint64_t value
  */
 uint64_t hex2uint(const char* hexstr, uint8_t hexstr_len);
+
+
+static uint64_t delay = 0;
 
 
 
@@ -369,7 +373,7 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
     }
     if (delta_time != 0) // Save delta time if needed as delay
     {
-        create_delay(delta_time, track, out_file);
+        delay += delta_time;
     }
     uint8_t data;
     if ((data = read_byte(midi_file, track)) < 0)
@@ -387,7 +391,7 @@ int16_t read_command(FILE* midi_file, track_info_t* track, FILE* out_file)
         }
     }
     int16_t result = parse_command(midi_file, track, data, out_file);
-    
+    return result;
 }
 
 void create_delay(int64_t delta_time, track_info_t* track, FILE* out_file)
@@ -449,12 +453,13 @@ int16_t parse_command(FILE* file, track_info_t* track, uint8_t data_byte_1, FILE
             break;
         }
         case SYSEX_EVENT_RESTART:
-        {
-            uint8_t len = (uint8_t)read_byte(file, track);
-
-        }
         case SYSEX_EVENT_START:
         {
+            uint8_t len = (uint8_t)read_byte(file, track); // Read length
+            for (int i = 0; i < len - 2; i++) // Read rest of the message
+            {
+                read_byte(file, track);
+            }
             return ERROR_UNKNOWN_EVENT; // SysEX events not supported
             break;
         }
@@ -525,11 +530,11 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
     {
         case MIDI_NOTE_OFF: // don't need to support note off for xylophone
         {
-            track->current_track_pos++; // Increase read track bytes by 1
+            read_byte(file, track);
             return ERROR_UNKNOWN_EVENT;
         }
         case MIDI_NOTE_ON:
-        {
+        {            
             uint8_t note = data_byte_1;
             uint8_t note_velocity;
             long pos = ftell(file); // Save current position
@@ -540,21 +545,21 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
             fseek(file, pos, SEEK_SET); // Restore previous position
             switch(note) // Check on note
             {
-                case MIDI_C1: create_note(C1, note_velocity, out_file); break;
-                case MIDI_D1: create_note(D1, note_velocity, out_file); break;
-                case MIDI_E1: create_note(E1, note_velocity, out_file); break;
-                case MIDI_F1: create_note(F1, note_velocity, out_file); break;
-                case MIDI_G1: create_note(G1, note_velocity, out_file); break;
-                case MIDI_A1: create_note(A1, note_velocity, out_file); break;
-                case MIDI_B1: create_note(B1, note_velocity, out_file); break;
-                case MIDI_C2: create_note(C2, note_velocity, out_file); break;
+                case MIDI_C1: create_note(C1, note_velocity, out_file, track); break;
+                case MIDI_D1: create_note(D1, note_velocity, out_file, track); break;
+                case MIDI_E1: create_note(E1, note_velocity, out_file, track); break;
+                case MIDI_F1: create_note(F1, note_velocity, out_file, track); break;
+                case MIDI_G1: create_note(G1, note_velocity, out_file, track); break;
+                case MIDI_A1: create_note(A1, note_velocity, out_file, track); break;
+                case MIDI_B1: create_note(B1, note_velocity, out_file, track); break;
+                case MIDI_C2: create_note(C2, note_velocity, out_file, track); break;
                 default: return ERROR_UNKNOWN_EVENT;
             }
             break;
         }
         case MIDI_CONTROL_CHANGE:
         {
-
+            read_byte(file, track); // Read 3rd byte
             return ERROR_UNKNOWN_EVENT; // There is not a single interesting event for this simple project
         }
         default: return ERROR_UNKNOWN_EVENT;
@@ -562,9 +567,12 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
     return SUCCESS;
 }
 
-void create_note(notes_e note, uint8_t velocity, FILE* out_file)
+void create_note(notes_e note, uint8_t velocity, FILE* out_file, track_info_t* track)
 {
     if (!velocity) return;
+    if (delay != 0)
+        create_delay(delay, track, out_file); // Write single delay
+    delay = 0;
     fprintf(out_file, "%c", note); // Save note to the output file
 }
 
