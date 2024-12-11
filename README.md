@@ -20,7 +20,7 @@ Build an electronic xylophone instrument that can be played using an Arduino mic
     Martin G: programming, documentation
     Matúš C: programming, documentation
     Jonáš H: programming, readme
-    Max G: how-tos, video
+    Max G: how-tos, video, readme
 
 ## Theoretical description and explanation
 Max: *We wanna play a xylophone, but at the same time we don't! We want it to play by itself...*
