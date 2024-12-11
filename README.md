@@ -254,6 +254,32 @@ case STATUS_DELAY_2: // On 2nd delay byte
 
 The tempo of the song can be easily changed while exporting the .MID file.
 
+The full pseudocode of the two main functions, `song_play()` and `song_fetch()` is as follows:
+```c
+song_play()
+    delay, status;
+    while status is not end:
+        song_load();
+        while in song buffer and status is not end:
+            if currently reading note:
+                if read byte is NONE: next byte is delay MSB
+                else if read byte is END: end the song
+                else if read byte is playable note: play the note
+                else invalid byte -> end the song
+            else if delay MSB: save to delay variable, next is delay LSB
+            else if delay LSB: save to delay variable, wait delay ms
+            else if END: end the function
+            else do nothing
+
+song_fetch()
+    read full UART Rx buffer (blocking)
+    detect whether track end byte was sent
+    write read buffer to EEPROM
+    if track end byte detected
+        end transmission
+    else request new chunk of data from PC
+```
+
 ## What we learned
 
 Delay function's argument must be a compile time constant.
