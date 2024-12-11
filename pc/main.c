@@ -233,6 +233,7 @@ int main(int argc, uint8_t* argv[])
 
     printf("Loading midi file...\n");
     FILE* f = fopen(path, "rb");
+    // FILE* f = fopen("C:\\Users\\mgaho\\Documents\\Martin\\School\\VUT\\5_semestr\\DE2\\project\\Xylophone\\pc\\Twinkle_Twinkle.mid", "rb");
     if (f == NULL)
     {
         fprintf(stderr, "Failed to load midi file: %i.\n", errno);
@@ -448,6 +449,10 @@ int16_t parse_command(FILE* file, track_info_t* track, uint8_t data_byte_1, FILE
             break;
         }
         case SYSEX_EVENT_RESTART:
+        {
+            uint8_t len = (uint8_t)read_byte(file, track);
+
+        }
         case SYSEX_EVENT_START:
         {
             return ERROR_UNKNOWN_EVENT; // SysEX events not supported
@@ -520,6 +525,7 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
     {
         case MIDI_NOTE_OFF: // don't need to support note off for xylophone
         {
+            track->current_track_pos++; // Increase read track bytes by 1
             return ERROR_UNKNOWN_EVENT;
         }
         case MIDI_NOTE_ON:
@@ -548,6 +554,7 @@ int16_t parse_midi_event(FILE* file, track_info_t* track, uint8_t data_byte_1, F
         }
         case MIDI_CONTROL_CHANGE:
         {
+
             return ERROR_UNKNOWN_EVENT; // There is not a single interesting event for this simple project
         }
         default: return ERROR_UNKNOWN_EVENT;
