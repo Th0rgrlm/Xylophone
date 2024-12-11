@@ -295,6 +295,8 @@ https://youtu.be/iVaCpZAgTJk?si=zSlmvccuRARTQfLz
 
 [bitmidi.com](https://bitmidi.com) - free MID files
 
+[CapCut](https://www.capcut.com/cs-cz/) - video editing app
+
 ## References
 
 [Standard MIDI-File Format Spec. 1.1, updated](https://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html)
