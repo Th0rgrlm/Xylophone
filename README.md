@@ -17,10 +17,10 @@
 Build an electronic xylophone instrument that can be played using an Arduino microcontroller. The project will combine hardware and software components to create an interactive and programmable musical instrument capable of producing different tones and melodies. Incorporating a graphical user interface (GUI) to visualize the notes being played.
 
 ## Team
-    Martin G:
-    Matúš C: 
-    Jonáš H:
-    Max G:
+    Martin G: programming, documentation
+    Matúš C: programming, documentation
+    Jonáš H: programming, readme
+    Max G: how-tos, video
 
 ## Theoretical description and explanation
 Max: *We wanna play a xylophone, but at the same time we don't! We want it to play by itself...*
